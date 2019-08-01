@@ -29,13 +29,9 @@ namespace GlukServerService.database
         {
             string INSERT_QUERY = "INSERT INTO `glucose` (`timestamp`,`value`) VALUES ";
 
-            Glucose item;
-            for (Iterator var2 = items.iterator(); var2.hasNext(); INSERT_QUERY = INSERT_QUERY + String.format(Locale.US, "(FROM_UNIXTIME(%d * 0.001),%f),", item.getTimestamp(), item.getValue()))
-            {
-                item = (Glucose)var2.next();
-            }
+            //TODO build query
 
-            return INSERT_QUERY.substring(0, INSERT_QUERY.length() - 1);
+            return INSERT_QUERY.Substring(0, INSERT_QUERY.Length - 1);
         }
     }
 }

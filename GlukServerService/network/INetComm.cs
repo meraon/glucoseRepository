@@ -8,7 +8,7 @@ namespace GlukServerService.network
 {
     interface INetComm
     {
-        void listen();
-        void terminate();
+        void Listen();
+        void Terminate();
     }
 }

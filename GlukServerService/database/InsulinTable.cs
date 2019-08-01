@@ -36,11 +36,7 @@ namespace GlukServerService.database
             }
             var INSERT_QUERY = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES ";
 
-            Insulin item;
-            for (Iterator var2 = items.iterator(); var2.hasNext(); INSERT_QUERY = INSERT_QUERY + System.String.format(, "(FROM_UNIXTIME(%d * 0.001),%f,%d),", item.getTimestamp(), item.getValue(), getBooleanAsInteger(item.isIsDayDosage())))
-            {
-                item = (Insulin)var2.next();
-            }
+            //TODO build query
 
             return INSERT_QUERY.Substring(0, INSERT_QUERY.Length - 1);
         }

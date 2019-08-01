@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,113 +11,73 @@ namespace GlukServerService.network
 {
     public class NetCommUDP : INetComm
     {
-        private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
-        private string ipMulticast;
-        private int port;
-        private MulticastSocket socket;
-        private boolean terminate = false;
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly string IpMulticast = "239.0.0.0";
+        public static readonly string ExpectedMessage = "allo!";
+        public static readonly string ExpectedResponse = "nibb";
+        public static readonly int BufferSize = 1024;
+        
+        private readonly IPAddress _multicastIp = IPAddress.Parse(IpMulticast);
+        private readonly int _port = 11223;
+        private UdpClient server;
+        private bool _terminate = false;
 
-        public NetCommUDP()
+        public void Listen()
         {
-            this.ipMulticast = Network.IP_MULTICAST;
-            this.port = Network.DEFAULT_PORT_UDP;
+            server = new UdpClient(_port);
+            server.JoinMulticastGroup(IPAddress.Parse(IpMulticast));
+            Receive();
         }
 
-        public NetCommUDP(int port)
+        public void Terminate()
         {
-            this.ipMulticast = Network.IP_MULTICAST;
-            this.port = port;
+            this._terminate = true;
+            server.Close();
         }
 
-        public NetCommUDP(String ipMulticast, int port)
+
+        private bool isValidMessage(string message)
         {
-            this.ipMulticast = ipMulticast;
-            this.port = port;
+            return message.Equals(ExpectedMessage);
         }
 
-        public NetCommUDP(Properties prop)
+        private void sendResponse(IPEndPoint ep)
         {
-            this.ipMulticast = prop.containsKey("ipMulticast") ? (String)prop.get("ipMulticast") : Network.IP_MULTICAST;
-            this.port = prop.containsKey("portUDP") ? Integer.parseInt((String)prop.get("portUDP")) : Network.DEFAULT_PORT_UDP;
+            var message = Encoding.ASCII.GetBytes(ExpectedResponse);
+            server.Send(message, message.Length, ep);
+
         }
 
-        private boolean isValidMessage(String message)
+        private void Receive()
         {
-            return message.equals(Network.EXPECTED_MESSAGE);
-        }
-
-        private void sendResponse(String message, InetAddress address, int port)
-        {
-            try
+            while (!_terminate)
             {
-                byte[] buf = new byte[100];
-                DatagramSocket socket = new DatagramSocket();
-                buf = message.getBytes();
-                DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
-                socket.send(packet);
-                socket.close();
-            }
-            catch (SocketException var7)
-            {
-                LOG.severe(var7.toString());
-            }
-            catch (UnknownHostException var8)
-            {
-                LOG.severe(var8.toString());
-            }
-            catch (IOException var9)
-            {
-                LOG.severe(var9.toString());
-            }
-
-        }
-
-        public void listen()
-        {
-            this.terminate = false;
-            byte[] buf = new byte[100];
-
-            try
-            {
-                this.socket = new MulticastSocket(this.port);
-                InetAddress group = InetAddress.getByName(this.ipMulticast);
-                this.socket.joinGroup(group);
-
-                String received;
-                do
+                try
                 {
-                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                    this.socket.receive(packet);
-                    received = new String(packet.getData(), 0, packet.getLength());
-                    if (this.isValidMessage(received))
+                    IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
+                    var bytes = server.Receive(ref ep);
+                    string message = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                    if (isValidMessage(message))
                     {
-                        this.sendResponse(Network.EXPECTED_RESPONSE, packet.getAddress(), packet.getPort());
+                        sendResponse(ep);
                     }
-                } while (!"end".equals(received));
 
-                this.socket.leaveGroup(group);
-                this.socket.close();
-            }
-            catch (UnknownHostException var5)
-            {
-                LOG.severe(var5.toString());
-            }
-            catch (IOException var6)
-            {
-                if (var6.getMessage().equals("socket closed") && this.terminate)
-                {
-                    LOG.severe("Socket closed by user...");
                 }
-
-                LOG.severe(var6.toString());
+                catch (SocketException ex)
+                {
+                    int code = ex.ErrorCode;
+                    if (code == 10004)
+                    {
+                        Log.Warn(ex.Message);
+                    }
+                    else
+                    {
+                        Log.Fatal(ex.ToString());
+                    }
+                }
             }
-
         }
 
-        public void terminate()
-        {
-            this.terminate = true;
-            this.socket.close();
-        }
+        
     }
 }
