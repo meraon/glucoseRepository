@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace GlukServerService.models
 {
     public class Insulin : EntryModel
     {
         public static readonly string VALUE_FORMAT = "#";
+
+        [JsonProperty("isDayDosage")]
+        private bool isDayDosage;
 
         public Insulin()
         {
@@ -23,8 +27,6 @@ namespace GlukServerService.models
             setValue(value);
             this.isDayDosage = isDayDosage;
         }
-
-        private bool isDayDosage;
 
         public bool isIsDayDosage()
         {

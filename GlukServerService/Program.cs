@@ -29,5 +29,7 @@ namespace GlukServerService
         {
             CultureInfo.CurrentCulture = culture;
         }
+
+
     }
 }

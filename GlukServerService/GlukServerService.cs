@@ -12,6 +12,8 @@ namespace GlukServerService
 {
     public partial class GlukServerService : ServiceBase
     {
+        MainServer server = new MainServer();
+
         public GlukServerService()
         {
             InitializeComponent();
@@ -19,10 +21,12 @@ namespace GlukServerService
 
         protected override void OnStart(string[] args)
         {
+            server.Start();
         }
 
         protected override void OnStop()
         {
+            server.Terminate();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace GlukServerService.database
     public class InsulinTable
     {
         public static readonly string TABLE_NAME = "insulin";
-        public static readonly string CREATE_TABLE = "CREATE TABLE `insulin` (`_id` INT NOT NULL AUTO_INCREMENT,`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,`value` FLOAT NOT NULL DEFAULT '0',`dayDosage` TINYINT NOT NULL DEFAULT '1',PRIMARY KEY (`_id`));";
+        public static readonly string CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `insulin` (`_id` INT NOT NULL AUTO_INCREMENT,`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,`value` FLOAT NOT NULL DEFAULT '0',`dayDosage` TINYINT NOT NULL DEFAULT '1',PRIMARY KEY (`_id`));";
 
         public InsulinTable()
         {
@@ -36,7 +36,10 @@ namespace GlukServerService.database
             }
             var INSERT_QUERY = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES ";
 
-            //TODO build query
+            foreach (Insulin item in items)
+            {
+                INSERT_QUERY += $"(FROM_UNIXTIME({item.getTimestamp()} * 0.001),{item.getValue():N1},{getBooleanAsInteger(item.isIsDayDosage())}),";
+            }
 
             return INSERT_QUERY.Substring(0, INSERT_QUERY.Length - 1);
         }

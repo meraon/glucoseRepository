@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using GlukServerService;
 using GlukServerService.network;
 
 namespace Testing
@@ -11,8 +13,19 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            NetCommUDP udp = new NetCommUDP();
-            udp.Listen();
+            MainServer mainServer = new MainServer();
+
+            try
+            {
+                mainServer.Start();
+                Console.ReadLine();
+            }
+            finally
+            {
+                mainServer.Terminate();
+            }
+
+
         }
     }
 }

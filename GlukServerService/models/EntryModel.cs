@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace GlukServerService.models
 {
@@ -12,11 +14,14 @@ namespace GlukServerService.models
         public static readonly string DATE_FORMAT = "yyyy/MM/dd";
         public static readonly string TIME_FORMAT = "HH:mm";
 
+        [JsonProperty("id")]
         protected int id;
+        [JsonProperty("timestamp")]
         protected long timestamp;
+        [JsonProperty("value")]
         protected float value;
 
-        public EntryModel()
+        protected EntryModel()
         {
         }
 

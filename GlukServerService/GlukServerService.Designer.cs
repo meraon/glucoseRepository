@@ -39,23 +39,6 @@ namespace GlukServerService
             // 
             this.ServiceName = "GlukServer";
 
-
-            try
-            {
-                Database db = Database.getInstance();
-                MySqlConnection connection = db.GetConnection();
-
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                logger.Error(ex.ToString);
-            }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
-            {
-                logger.Error(ex.ToString);
-            }
-
-
         }
 
         #endregion
