@@ -11,7 +11,8 @@ namespace GlukServerService.network
 {
     public class NetCommUDP : INetComm
     {
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+
         private static readonly string IpMulticast = "239.0.0.0";
         public static readonly string ExpectedMessage = "allo!";
         public static readonly string ExpectedResponse = "nibb";
@@ -24,6 +25,7 @@ namespace GlukServerService.network
 
         public void Listen()
         {
+            LOG.Info("UDP server started listening...");
             server = new UdpClient(_port);
             server.JoinMulticastGroup(IPAddress.Parse(IpMulticast));
             Receive();
@@ -55,8 +57,11 @@ namespace GlukServerService.network
                 try
                 {
                     IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
+                    LOG.Info("Waiting for client...");
                     var bytes = server.Receive(ref ep);
+                    LOG.Info("Client accepted! " + ep.Address + ":" + ep.Port);
                     string message = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                    LOG.Info("Client message: " + message);
                     if (isValidMessage(message))
                     {
                         sendResponse(ep);
@@ -68,11 +73,11 @@ namespace GlukServerService.network
                     int code = ex.ErrorCode;
                     if (code == 10004)
                     {
-                        Log.Warn(ex.Message);
+                        LOG.Warn(ex.Message);
                     }
                     else
                     {
-                        Log.Fatal(ex.ToString());
+                        LOG.Fatal(ex.ToString());
                     }
                 }
             }

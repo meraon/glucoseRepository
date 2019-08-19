@@ -24,6 +24,9 @@ namespace Testing
             {
                 mainServer.Terminate();
             }
+            //MyUdpServer server = new MyUdpServer();
+            //server.Start();
+            Console.ReadLine();
 
 
         }

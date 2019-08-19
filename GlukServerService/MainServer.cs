@@ -7,57 +7,79 @@ using System.Threading.Tasks;
 using GlukServerService.models;
 using GlukServerService.network;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog;
 using NLog.Fluent;
 
 namespace GlukServerService
 {
     public class MainServer
     {
+        private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+
         private NetCommUDP _udpServer;
         private NetCommTCP _tcpServer;
+        private UdpServer udpServer;
+
+
 
         public MainServer()
         {
-            _udpServer = new NetCommUDP();
+            LOG.Info("Initializing main server...");
+
+            udpServer = new UdpServer();
             _tcpServer = new NetCommTCP(json =>
+
             {
                 //TODO deserialize json
-                if (json.Contains("isDayDosage"))
+                try
                 {
-                    var jArray = JArray.Parse(json);
-                    var items = jArray.ToObject<List<Insulin>>();
-                    SaveInsulins(items);
+                    if (json.Contains("isDayDosage"))
+                    {
+                        var jArray = JArray.Parse(json);
+                        var items = jArray.ToObject<List<Insulin>>();
+                        SaveInsulins(items);
+                    }
+                    else
+                    {
+                        var jArray = JArray.Parse(json);
+                        var items = jArray.ToObject<List<Glucose>>();
+                        SaveGlucoses(items);
+                    }
                 }
-                else
+                catch (JsonReaderException ex)
                 {
-                    var jArray = JArray.Parse(json);
-                    var items = jArray.ToObject<List<Glucose>>();
-                    SaveGlucoses(items);
+                    LOG.Warn(
+                        $"Error encountered while parsing received JSON on line {ex.LineNumber} position {ex.LinePosition}\nJSON: {json}");
                 }
                 
             } );
+
+            LOG.Info("Main server initialized.");
+
         }
 
         public MainServer(ItemsReceived itemsReceived)
         {
-            _udpServer = new NetCommUDP();
+            LOG.Info("Initializing main server...");
+            udpServer = new UdpServer();
             _tcpServer = new NetCommTCP(itemsReceived);
+            LOG.Info("Main server initialized.");
         }
 
 
         public void Start()
         {
+            udpServer.Listen();
             var tcpServerThread = new Thread(() => _tcpServer.Listen());
-            var udpServerThread = new Thread(() => _udpServer.Listen());
             tcpServerThread.Start();
-            udpServerThread.Start();
         }
 
         public void Terminate()
         {
             _tcpServer.Terminate();
-            _udpServer.Terminate();
+            udpServer.Terminate();
         }
 
         public void SaveGlucoses(List<Glucose> items)

@@ -58,6 +58,7 @@ namespace GlukServerService.network
 
         public void Listen()
         {
+            LOG.Info("TCP server started listening...");
             server = new TcpListener(IPAddress.Any, port);
             server.Start();
             _running = true;
@@ -65,12 +66,16 @@ namespace GlukServerService.network
             {
                 try
                 {
+                    LOG.Info("Waiting for client...");
                     client = server.AcceptTcpClient();
+                    LOG.Info("Client accepted! " + client.Client.RemoteEndPoint);
                     StreamReader reader = new StreamReader(client.GetStream());
                     NetworkStream stream = client.GetStream();
 
                     string json = reader.ReadLine();
 
+                    LOG.Info("JSON received:\n" + json);
+                    
                     if (!IsJsonValid(json))
                     {
                         //send response 
@@ -122,6 +127,7 @@ namespace GlukServerService.network
         private void ItemsReceived(string json)
         {
             if(JsonReceived == null) return;
+            
 
             var itemsReceivedThread = new Thread(() => JsonReceived(json));
             itemsReceivedThread.Start();
