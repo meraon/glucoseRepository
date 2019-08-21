@@ -24,12 +24,11 @@ namespace GlukServerService.network
 
         public static string ObjectAcceptedMessage = "OK\n";
         public static string ObjectRejectedMessage = "ERR\n";
+        public static int port = 11123;
 
-        
         private readonly ItemsReceived JsonReceived;
         private TcpListener server;
         private TcpClient client;
-        private int port = 11123;
         private bool _terminate;
         private bool _running;
 
@@ -51,7 +50,7 @@ namespace GlukServerService.network
         public NetCommTCP(ItemsReceived jsonReceived, int port)
         {
             this.JsonReceived = jsonReceived;
-            this.port = port;
+            NetCommTCP.port = port;
         }
 
         
@@ -74,7 +73,7 @@ namespace GlukServerService.network
 
                     string json = reader.ReadLine();
 
-                    LOG.Info("JSON received:\n" + json);
+                    //LOG.Info("JSON received:\n" + json);
                     
                     if (!IsJsonValid(json))
                     {
@@ -127,8 +126,6 @@ namespace GlukServerService.network
         private void ItemsReceived(string json)
         {
             if(JsonReceived == null) return;
-            
-
             var itemsReceivedThread = new Thread(() => JsonReceived(json));
             itemsReceivedThread.Start();
         }

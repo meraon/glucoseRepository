@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,78 +11,61 @@ namespace GlukServerService.network
 {
     public class NetCommUDP : INetComm
     {
-        private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+        Logger LOG = LogManager.GetCurrentClassLogger();
 
         private static readonly string IpMulticast = "239.0.0.0";
         public static readonly string ExpectedMessage = "allo!";
-        public static readonly string ExpectedResponse = "nibb";
-        public static readonly int BufferSize = 1024;
+        int port = 11223;
+        UdpClient server;
         
-        private readonly IPAddress _multicastIp = IPAddress.Parse(IpMulticast);
-        private readonly int _port = 11223;
-        private UdpClient server;
-        private bool _terminate = false;
-
         public void Listen()
         {
-            LOG.Info("UDP server started listening...");
-            server = new UdpClient(_port);
+            server = new UdpClient(port);
             server.JoinMulticastGroup(IPAddress.Parse(IpMulticast));
-            Receive();
+            server.BeginReceive(OnDataReceived, server);
         }
 
         public void Terminate()
         {
-            this._terminate = true;
             server.Close();
         }
 
-
-        private bool isValidMessage(string message)
+        private void OnDataReceived(IAsyncResult result)
         {
-            return message.Equals(ExpectedMessage);
-        }
-
-        private void sendResponse(IPEndPoint ep)
-        {
-            var message = Encoding.ASCII.GetBytes(ExpectedResponse);
-            server.Send(message, message.Length, ep);
-
-        }
-
-        private void Receive()
-        {
-            while (!_terminate)
+            try
             {
-                try
+                if (!(result.AsyncState is UdpClient socket))
                 {
-                    IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
-                    LOG.Info("Waiting for client...");
-                    var bytes = server.Receive(ref ep);
-                    LOG.Info("Client accepted! " + ep.Address + ":" + ep.Port);
-                    string message = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                    LOG.Info("Client message: " + message);
-                    if (isValidMessage(message))
-                    {
-                        sendResponse(ep);
-                    }
+                    LOG.Warn($"Expected AsyncState of type {typeof(UdpClient).Name}, ending UDP server.");
+                    return;
+                }
+                IPEndPoint sourceEp = new IPEndPoint(0, 0);
+                byte[] message = socket?.EndReceive(result, ref sourceEp);
+                string msgString = Encoding.ASCII.GetString(message);
 
-                }
-                catch (SocketException ex)
+                if (IsValidMessage(msgString))
                 {
-                    int code = ex.ErrorCode;
-                    if (code == 10004)
-                    {
-                        LOG.Warn(ex.Message);
-                    }
-                    else
-                    {
-                        LOG.Fatal(ex.ToString());
-                    }
+                    string resonse = NetCommTCP.port.ToString();
+                    socket.Send(Encoding.ASCII.GetBytes(resonse), resonse.Length, sourceEp);
                 }
+                else if (msgString.Trim().Equals("end"))
+                {
+                    socket.Close();
+                    LOG.Warn("Closed UDP server");
+                    return;
+                }
+                socket.BeginReceive(OnDataReceived, socket);
+            }
+            catch (Exception e)
+            {
+
+                LOG.Fatal(e.ToString);
             }
         }
 
-        
+        private bool IsValidMessage(string message)
+        {
+            return message.Trim().Equals(ExpectedMessage);
+        }
     }
 }

@@ -17,10 +17,8 @@ namespace GlukServerService
     public class MainServer
     {
         private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
-
-        private NetCommUDP _udpServer;
         private NetCommTCP _tcpServer;
-        private UdpServer udpServer;
+        private NetCommUDP _netCommUdp;
 
 
 
@@ -28,7 +26,7 @@ namespace GlukServerService
         {
             LOG.Info("Initializing main server...");
 
-            udpServer = new UdpServer();
+            _netCommUdp = new NetCommUDP();
             _tcpServer = new NetCommTCP(json =>
 
             {
@@ -63,7 +61,7 @@ namespace GlukServerService
         public MainServer(ItemsReceived itemsReceived)
         {
             LOG.Info("Initializing main server...");
-            udpServer = new UdpServer();
+            _netCommUdp = new NetCommUDP();
             _tcpServer = new NetCommTCP(itemsReceived);
             LOG.Info("Main server initialized.");
         }
@@ -71,7 +69,7 @@ namespace GlukServerService
 
         public void Start()
         {
-            udpServer.Listen();
+            _netCommUdp.Listen();
             var tcpServerThread = new Thread(() => _tcpServer.Listen());
             tcpServerThread.Start();
         }
@@ -79,7 +77,7 @@ namespace GlukServerService
         public void Terminate()
         {
             _tcpServer.Terminate();
-            udpServer.Terminate();
+            _netCommUdp.Terminate();
         }
 
         public void SaveGlucoses(List<Glucose> items)
