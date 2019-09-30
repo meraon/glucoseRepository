@@ -101,6 +101,10 @@ namespace GlukServerService.network
                         {
                             LOG.Warn(ex.Message);
                         }
+                        else
+                        {
+                            LOG.Error(ex.ToString);
+                        }
                     }
                     else
                     {

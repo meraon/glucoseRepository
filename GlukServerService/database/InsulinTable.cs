@@ -11,12 +11,13 @@ namespace GlukServerService.database
 {
     public class InsulinTable
     {
-        public static readonly string TABLE_NAME = "insulin";
-        public static readonly string CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `insulin` (`_id` INT NOT NULL AUTO_INCREMENT,`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,`value` FLOAT NOT NULL DEFAULT '0',`dayDosage` TINYINT NOT NULL DEFAULT '1',PRIMARY KEY (`_id`));";
-
-        public InsulinTable()
-        {
-        }
+        public static readonly string TableName = "insulin";
+        public static readonly string CreateTable = "CREATE TABLE IF NOT EXISTS `insulin` " +
+                                                    "(`_id` INT NOT NULL AUTO_INCREMENT," +
+                                                    "`value` FLOAT NOT NULL DEFAULT '0'," +
+                                                    "`dayDosage` TINYINT(1) NOT NULL DEFAULT '1'," +
+                                                    "`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+                                                    "PRIMARY KEY (`_id`))";
 
         public static string GetInsertQuery(long timestamp, float value, bool isDayDosage)
         {
@@ -34,14 +35,14 @@ namespace GlukServerService.database
             {
                 Program.SetCulture(Program.CULTURE);
             }
-            var INSERT_QUERY = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES ";
+            var insertQuery = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES ";
 
             foreach (Insulin item in items)
             {
-                INSERT_QUERY += $"(FROM_UNIXTIME({item.getTimestamp()} * 0.001),{item.getValue():N1},{getBooleanAsInteger(item.isIsDayDosage())}),";
+                insertQuery += $"(FROM_UNIXTIME({item.getTimestamp()} * 0.001),{item.getValue():N1},{getBooleanAsInteger(item.isIsDayDosage())}),";
             }
 
-            return INSERT_QUERY.Substring(0, INSERT_QUERY.Length - 1);
+            return insertQuery.Substring(0, insertQuery.Length - 1);
         }
 
         private static int getBooleanAsInteger(bool b)

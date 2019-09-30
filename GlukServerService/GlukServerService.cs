@@ -15,7 +15,7 @@ namespace GlukServerService
     {
         private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
-        MainServer server = new MainServer();
+        MainServer server;
 
         public GlukServerService()
         {
@@ -25,6 +25,7 @@ namespace GlukServerService
         protected override void OnStart(string[] args)
         {
             LOG.Info("Starting main server...");
+            server = new MainServer(args);
             server.Start();
             LOG.Info("Main server started");
         }

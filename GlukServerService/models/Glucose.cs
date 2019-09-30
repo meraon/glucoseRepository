@@ -19,5 +19,12 @@ namespace GlukServerService.models
             setTimestamp(timestamp);
             setValue(value);
         }
+
+        public Glucose(int id, long timestamp, float value)
+        {
+            setId(id);
+            setTimestamp(timestamp);
+            setValue(value);
+        }
     }
 }

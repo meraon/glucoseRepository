@@ -12,12 +12,12 @@ namespace GlukServerService.database
 {
     public class GlucoseTable
     {
-        public static readonly string TABLE_NAME = "glucose";
-        public static readonly string CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `glucose` (`_id` INT NOT NULL AUTO_INCREMENT,`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,`value` FLOAT NOT NULL DEFAULT '0',PRIMARY KEY (`_id`) )";
-
-        public GlucoseTable()
-        {
-        }
+        public static readonly string TableName = "glucose";
+        public static readonly string CreateTable = "CREATE TABLE IF NOT EXISTS `glucose` " +
+                                                    "(`_id` INT NOT NULL AUTO_INCREMENT," +
+                                                    "`value` FLOAT NOT NULL DEFAULT '0'," +
+                                                    "`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+                                                    "PRIMARY KEY (`_id`))";
 
         public static string GetInsertQuery(long timestamp, float value)
         {
@@ -30,14 +30,14 @@ namespace GlukServerService.database
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 
-            string INSERT_QUERY = "INSERT INTO `glucose` (`timestamp`,`value`) VALUES ";
+            string insertQuery = "INSERT INTO `glucose` (`timestamp`,`value`) VALUES ";
 
             foreach (Glucose item in items)
             {
-                INSERT_QUERY += $"(FROM_UNIXTIME({item.getTimestamp()} * 0.001),{item.getValue():N1}),";
+                insertQuery += $"(FROM_UNIXTIME({item.getTimestamp()} * 0.001),{item.getValue():N1}),";
             }
 
-            return INSERT_QUERY.Substring(0, INSERT_QUERY.Length - 1);
+            return insertQuery.Substring(0, insertQuery.Length - 1);
         }
     }
 }

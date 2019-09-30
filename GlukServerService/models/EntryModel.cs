@@ -45,6 +45,11 @@ namespace GlukServerService.models
             this.timestamp = timestamp;
         }
 
+        public void setTimestamp(string dateTime)
+        {
+
+        }
+
         public float getValue()
         {
             return value;
