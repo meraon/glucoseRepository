@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GlukServerService.models;
 using GlukServerService.network;
+using Microsoft.Win32;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,7 +25,6 @@ namespace GlukServerService
 
         private Timer _backupTimer;
 
-
         public MainServer()
         {
             LOG.Info("Initializing main server...");
@@ -33,7 +33,6 @@ namespace GlukServerService
             _tcpServer = new NetCommTCP(json =>
 
             {
-                //TODO deserialize json
                 try
                 {
                     if (json.Contains("isDayDosage"))
@@ -54,30 +53,27 @@ namespace GlukServerService
                     LOG.Warn(
                         $"Error encountered while parsing received JSON on line {ex.LineNumber} position {ex.LinePosition}\nJSON: {json}");
                 }
-                
-            } );
+
+            });
+
+            ProcessStartUpParameters();
+            InitDatabaseBackup();
 
             LOG.Info("Main server initialized.");
 
         }
-
+        
         public MainServer(ItemsReceived itemsReceived)
         {
             LOG.Info("Initializing main server...");
             _db = new Database();
             _netCommUdp = new NetCommUDP();
             _tcpServer = new NetCommTCP(itemsReceived);
+
+            ProcessStartUpParameters();
+            InitDatabaseBackup();
+
             LOG.Info("Main server initialized.");
-        }
-
-        public MainServer(string[] args) : this()
-        {
-            if(args.Length > 0) HandleArgs(args);
-        }
-
-        public MainServer(ItemsReceived itemsReceived, string[] args) : this(itemsReceived)
-        {
-            if (args.Length > 0) HandleArgs(args);
         }
 
         public void Start()
@@ -110,26 +106,34 @@ namespace GlukServerService
             _db.SaveInsulins(items);
         }
 
-        private void HandleArgs(string[] args)
+        private void ProcessStartUpParameters()
         {
-            //check for correct filepath
-            if (!CheckFilePath(args[0])) return;
-
-            //check for second argument(restore backup at start)
-            if (args.Length > 1)
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(RegistryKeys.RegistryPath) ?? Registry.CurrentUser.CreateSubKey(RegistryKeys.RegistryPath);
+            string path = (string)registryKey?.GetValue(RegistryKeys.BackupPath);
+            if (path != null)
             {
-                if (args[1].Trim().ToLower().Equals("true"))
+                string restoreOnStartup = (string)registryKey.GetValue(RegistryKeys.RestoreDbOnStartUp);
+                if (restoreOnStartup != null)
                 {
-                    _db.RestoreBackup(args[0]);
+                    if (restoreOnStartup.ToLower().Trim().Equals("true"))
+                    {
+                        _db.RestoreBackup(path);
+                    }
                 }
-                else if (args[1].Trim().ToLower().Equals("test_backup"))
+
+                string testBackup = (string)registryKey.GetValue(RegistryKeys.TestBackup);
+                if (testBackup != null)
                 {
-                    _db.MakeBackup(args[0]);
-                    return;
+                    if (testBackup.ToLower().Trim().Equals("true"))
+                    {
+                        _db.MakeBackup(path);
+                    }
                 }
             }
-
-            DatabaseBackup(args[0]);
+            else
+            {
+                LOG.Info($"Missing backup path in current user registry {RegistryKeys.RegistryPath}");
+            }
         }
 
         public static bool CheckFilePath(string path)
@@ -146,7 +150,7 @@ namespace GlukServerService
             }
         }
 
-        private void DatabaseBackup(string path)
+        private void InitDatabaseBackup()
         {
             LOG.Info("Scheduling periodic database backup...");
             
@@ -164,14 +168,34 @@ namespace GlukServerService
             }
             TimeSpan period = new TimeSpan(TimeSpan.TicksPerDay);
 
-
-
-            //execution timer
             _backupTimer = new Timer(x =>
             {
-                _db.MakeBackup(path);
+                BackupDatabase();
             }, null, dueTime, period);
 
+        }
+
+        private void BackupDatabase()
+        {
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(RegistryKeys.RegistryPath);
+            if (registryKey == null)
+            {
+                LOG.Warn($"Missing registry key for current user: {RegistryKeys.RegistryPath}, database backup won't execute...");
+                return;
+            }
+            string path = (string)registryKey.GetValue(RegistryKeys.BackupPath);
+            if (path == null)
+            {
+                LOG.Warn($"Missing registry value \"{RegistryKeys.BackupPath}\", database backup won't execute...");
+                return;
+            }
+
+            if (!CheckFilePath(path))
+            {
+                return;
+            }
+
+            _db.MakeBackup(path);
         }
     }
 }

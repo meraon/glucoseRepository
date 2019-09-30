@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GlukServerService;
 using GlukServerService.models;
 using GlukServerService.network;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 
 namespace Testing
@@ -16,16 +17,20 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            MainServer mainServer = new MainServer();
 
-            try
+            string registryPath = @"System\CurrentControlSet\services\GlukServerService";
+
+            RegistryKey registry = Registry.CurrentUser.OpenSubKey(registryPath, true);
+            if (registry != null)
             {
-                mainServer.Start();
-                Console.ReadLine();
+                Console.WriteLine("OK");
             }
-            finally
+            else
             {
-                mainServer.Terminate();
+                RegistryKey regKey = Registry.CurrentUser.CreateSubKey(registryPath);
+                regKey.SetValue("backupPath",@"D:\dia_data_backup.sql");
+                regKey.SetValue("restoreDbOnStartUp", @"false");
+                regKey.SetValue("testBackup", @"false");
             }
 
             Console.ReadLine();
