@@ -8,16 +8,21 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Rectangle Grid.Column="0" 
-                   Grid.Row="0" 
-                   Grid.RowSpan="2"
-                   Fill="LightSteelBlue"/>
+        <Menu Grid.Column="0" Grid.ColumnSpan="2" Height="Auto">
+            <MenuItem Header="File">
+                <MenuItem Header="Save"></MenuItem>
+                <MenuItem Header="Exit"></MenuItem>
+            </MenuItem>
+
+        </Menu>        
+
     </Grid>
 </Window>

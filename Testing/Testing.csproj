@@ -69,6 +69,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GlukModels\GlukModels.csproj">
+      <Project>{4d612dd7-499b-4ecc-be0f-fa864ebb5b60}</Project>
+      <Name>GlukModels</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GlukServerService\GlukServerService.csproj">
       <Project>{a694a2df-6c42-4185-aca6-c56631f96f37}</Project>
       <Name>GlukServerService</Name>

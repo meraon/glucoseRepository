@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using NLog;
+using System.Collections.Generic;
+using System.ServiceProcess;
 
 namespace GlukServerService
 {
@@ -34,9 +26,24 @@ namespace GlukServerService
         protected override void OnStart(string[] args)
         {
             LOG.Info("Starting main server...");
+            RegistryKey regKey = Registry.LocalMachine.OpenSubKey(RegistryKeys.RegistryPath);
+            if (regKey == null)
+            {
+                CreateDefaultRegKeys();
+            }
+
             server = new MainServer();
             server.Start();
             LOG.Info("Main server started");
+        }
+
+        private void CreateDefaultRegKeys()
+        {
+            RegistryKey regKey = Registry.LocalMachine.CreateSubKey(RegistryKeys.RegistryPath, true);
+            foreach (var keyValue in RegistryKeyDictionary)
+            {
+                regKey.SetValue(keyValue.Key, keyValue.Value);
+            }
         }
 
         protected override void OnStop()

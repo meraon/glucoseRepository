@@ -1,12 +1,7 @@
-﻿using System;
+﻿using GlukModels;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using GlukServerService.models;
-using MySqlX.XDevAPI;
 
 namespace GlukServerService.database
 {
@@ -16,7 +11,7 @@ namespace GlukServerService.database
         public static readonly string CreateTable = "CREATE TABLE IF NOT EXISTS `glucose` " +
                                                     "(`_id` INT NOT NULL AUTO_INCREMENT," +
                                                     "`value` FLOAT NOT NULL DEFAULT '0'," +
-                                                    "`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+                                                    "`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                                                     "PRIMARY KEY (`_id`))";
 
         public static string GetInsertQuery(long timestamp, float value)

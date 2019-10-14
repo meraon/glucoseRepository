@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GlukModels;
 using GlukServerService.database;
-using GlukServerService.models;
 using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI.Relational;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace GlukServerService
 {
@@ -71,7 +66,7 @@ namespace GlukServerService
 
         public void SaveInsulins(List<Insulin> items)
         {
-            LOG.Info("Saving glucoses");
+            LOG.Info("Saving Insulins");
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
@@ -88,7 +83,7 @@ namespace GlukServerService
                     }
                 }
             }
-            LOG.Info("Glucoses saved");
+            LOG.Info("Insulins saved");
         }
 
         public List<Glucose> GetGlucoses()
@@ -229,7 +224,7 @@ namespace GlukServerService
             LOG.Info("Backup created.");
         }
 
-        //TODO check if timestamp is correct
+        //TODO check if timestamp is correct && change methods location
         public static long DateTimeStringToTimestamp(string dt)
         {
             var dateTime = DateTime.Parse(dt);
@@ -246,7 +241,7 @@ namespace GlukServerService
         public static DateTime TimestampToDateTime(long timestamp)
         {
             DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0);
-            dt = dt.AddMilliseconds(timestamp); 
+            dt = dt.AddSeconds(timestamp); 
             return dt;
         }
         

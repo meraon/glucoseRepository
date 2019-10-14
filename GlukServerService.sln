@@ -11,6 +11,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "GlukServerServiceSetup", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlukAppWpf", "GlukAppWpf\GlukAppWpf.csproj", "{C7C842D3-D6CA-427F-A707-42FC17E40971}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlukModels", "GlukModels\GlukModels.csproj", "{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,14 @@ Global
 		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|x86.ActiveCfg = Release|Any CPU
 		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|x86.Build.0 = Release|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using GlukServerService.models;
+﻿using GlukModels;
 using GlukServerService.network;
 using Microsoft.Win32;
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using NLog.Fluent;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 
 namespace GlukServerService
 {
@@ -108,7 +104,14 @@ namespace GlukServerService
 
         private void ProcessStartUpParameters()
         {
-            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(RegistryKeys.RegistryPath) ?? Registry.CurrentUser.CreateSubKey(RegistryKeys.RegistryPath);
+            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(RegistryKeys.RegistryPath);
+
+            if (registryKey == null)
+            {
+                LOG.Warn("MIssing registry key HKEY_LOCAL_MACHINE\\" + RegistryKeys.RegistryPath);
+                return;
+            }
+
             string path = (string)registryKey?.GetValue(RegistryKeys.BackupPath);
             if (path != null)
             {
@@ -132,7 +135,7 @@ namespace GlukServerService
             }
             else
             {
-                LOG.Info($"Missing backup path in current user registry {RegistryKeys.RegistryPath}");
+                LOG.Info($"Missing backup path in local machine registry {RegistryKeys.RegistryPath}");
             }
         }
 
@@ -177,10 +180,10 @@ namespace GlukServerService
 
         private void BackupDatabase()
         {
-            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(RegistryKeys.RegistryPath);
+            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(RegistryKeys.RegistryPath);
             if (registryKey == null)
             {
-                LOG.Warn($"Missing registry key for current user: {RegistryKeys.RegistryPath}, database backup won't execute...");
+                LOG.Warn($"Missing registry key for local machine: {RegistryKeys.RegistryPath}, database backup won't execute...");
                 return;
             }
             string path = (string)registryKey.GetValue(RegistryKeys.BackupPath);

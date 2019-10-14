@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
-namespace GlukServerService.models
+namespace GlukModels
 {
-    public abstract class EntryModel
+    public class EntryModel
     {
         public static readonly string DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
         public static readonly string DATE_FORMAT = "yyyy/MM/dd";
