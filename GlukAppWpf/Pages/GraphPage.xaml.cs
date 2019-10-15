@@ -13,27 +13,31 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GalaSoft.MvvmLight.Command;
-using GlukAppWpf.Pages;
 using GlukAppWpf.ViewModels;
 using OxyPlot;
+using OxyPlot.Series;
 
-namespace GlukAppWpf
+namespace GlukAppWpf.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for GraphPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class GraphPage : Page
     {
 
         
 
-        
 
-        public MainWindow()
+        public GraphPage()
         {
             InitializeComponent();
-            DataContext = new MainViewModel(MainFrame);
+            DataContext = new GraphViewModel(Plot.ActualModel);
+        }
+
+        public GraphPage(ObservableCollection<DataPoint> points)
+        {
+            InitializeComponent();
+            DataContext = new GraphViewModel(Plot.ActualModel, points);
         }
     }
 }

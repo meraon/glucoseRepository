@@ -13,27 +13,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GalaSoft.MvvmLight.Command;
-using GlukAppWpf.Pages;
 using GlukAppWpf.ViewModels;
 using OxyPlot;
 
-namespace GlukAppWpf
+namespace GlukAppWpf.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for TablePage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class TablePage : Page
     {
-
-        
-
-        
-
-        public MainWindow()
+        public TablePage()
         {
             InitializeComponent();
-            DataContext = new MainViewModel(MainFrame);
+        }
+
+        public TablePage(ObservableCollection<DataPoint> points) : this()
+        {
+            DataContext = new TableViewModel(points);
         }
     }
 }

@@ -10,11 +10,11 @@ namespace GlukModels
         public static readonly string TIME_FORMAT = "HH:mm";
 
         [JsonProperty("id")]
-        protected int id;
+        protected int Id;
         [JsonProperty("timestamp")]
-        protected long timestamp;
+        protected long Timestamp;
         [JsonProperty("value")]
-        protected float value;
+        protected float Value;
 
         protected EntryModel()
         {
@@ -22,22 +22,22 @@ namespace GlukModels
 
         public int getId()
         {
-            return id;
+            return Id;
         }
 
         public void setId(int id)
         {
-            this.id = id;
+            this.Id = id;
         }
 
         public long getTimestamp()
         {
-            return timestamp;
+            return Timestamp;
         }
 
         public void setTimestamp(long timestamp)
         {
-            this.timestamp = timestamp;
+            this.Timestamp = timestamp;
         }
 
         public void setTimestamp(string dateTime)
@@ -47,12 +47,12 @@ namespace GlukModels
 
         public float getValue()
         {
-            return value;
+            return Value;
         }
 
         public void setValue(float value)
         {
-            this.value = value;
+            this.Value = value;
         }
 
         public override string ToString()

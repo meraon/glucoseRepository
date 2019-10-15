@@ -7,22 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Menu Grid.Column="0" Grid.ColumnSpan="2" Height="Auto">
-            <MenuItem Header="File">
-                <MenuItem Header="Save"></MenuItem>
-                <MenuItem Header="Exit"></MenuItem>
+        <Menu Grid.Column="0" Height="Auto">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Command="Save"></MenuItem>
+                <MenuItem Header="_Export" Command="{Binding ExportCommand}"></MenuItem>
+                <MenuItem Header="_Import" Command="{Binding ImportCommand}"></MenuItem>
+                <Separator/>
+                <MenuItem Header="_Exit"></MenuItem>
             </MenuItem>
-
-        </Menu>        
-
+        </Menu>
+        <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

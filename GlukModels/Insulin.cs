@@ -10,7 +10,7 @@ namespace GlukModels
         public static readonly string VALUE_FORMAT = "#";
 
         [JsonProperty("isDayDosage")]
-        private bool isDayDosage;
+        private bool _isDayDosage;
 
         public Insulin()
         {
@@ -23,7 +23,7 @@ namespace GlukModels
         {
             setTimestamp(timestamp);
             setValue(value);
-            this.isDayDosage = isDayDosage;
+            this._isDayDosage = isDayDosage;
         }
 
         public Insulin(int id, long timestamp, float value, bool isDayDosage)
@@ -31,17 +31,17 @@ namespace GlukModels
             setId(id);
             setTimestamp(timestamp);
             setValue(value);
-            this.isDayDosage = isDayDosage;
+            this._isDayDosage = isDayDosage;
         }
 
         public bool isIsDayDosage()
         {
-            return isDayDosage;
+            return _isDayDosage;
         }
 
         public void setIsDayDosage(bool isDayDosage)
         {
-            this.isDayDosage = isDayDosage;
+            this._isDayDosage = isDayDosage;
         }
     }
 }
