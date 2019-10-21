@@ -18,8 +18,7 @@ namespace GlukServerService
         private static Database _database;
         public string _baseConnectionString;
         public string _connectionString;
-
-        private string _databaseName = "dia_data";
+        public string _databaseName = "dia_data";
         private string _server = "localhost";
         private string _port = "3306";
         private string _user = "root";
@@ -147,7 +146,22 @@ namespace GlukServerService
             return insulins;
         }
 
-        private void InitDatabase()
+        public void DropTables()
+        {
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DROP TABLE " + GlucoseTable.TableName;
+                    command.ExecuteNonQuery();
+                    command.CommandText = "DROP TABLE " + InsulinTable.TableName;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void InitDatabase()
         {
             using (MySqlConnection connection = new MySqlConnection(_baseConnectionString))
             {
