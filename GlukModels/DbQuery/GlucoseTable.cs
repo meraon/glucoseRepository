@@ -1,9 +1,10 @@
-﻿using GlukModels;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using System.Threading;
 
-namespace GlukServerService.database
+namespace GlukModels.DbQuery
 {
     public class GlucoseTable
     {
@@ -16,7 +17,6 @@ namespace GlukServerService.database
 
         public static string GetInsertQuery(long timestamp, float value)
         {
-            if(CultureInfo.CurrentCulture != Program.CULTURE) { }
             string INSERT_QUERY = "INSERT INTO `glucose` (`timestamp`,`value`) VALUES (FROM_UNIXTIME(%d * 0.001),%f)";
             return string.Format(INSERT_QUERY, timestamp, value);
         }

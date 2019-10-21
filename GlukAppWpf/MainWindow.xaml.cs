@@ -26,10 +26,6 @@ namespace GlukAppWpf
     public partial class MainWindow : Window
     {
 
-        
-
-        
-
         public MainWindow()
         {
             InitializeComponent();

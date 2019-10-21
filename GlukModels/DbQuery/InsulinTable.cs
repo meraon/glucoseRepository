@@ -1,9 +1,9 @@
-﻿using GlukModels;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
-
-namespace GlukServerService.database
+namespace GlukModels.DbQuery
 {
     public class InsulinTable
     {
@@ -17,27 +17,18 @@ namespace GlukServerService.database
 
         public static string GetInsertQuery(long timestamp, float value, bool isDayDosage)
         {
-            if (CultureInfo.CurrentCulture != Program.CULTURE)
-            {
-                Program.SetCulture(Program.CULTURE);
-            }
             string INSERT_QUERY = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES (FROM_UNIXTIME(%d * 0.001),%f,%d)";
             return string.Format(INSERT_QUERY, timestamp, value, getBooleanAsInteger(isDayDosage));
         }
 
         public static string GetInsertQuery(List<Insulin> items)
         {
-            if (CultureInfo.CurrentCulture != Program.CULTURE)
-            {
-                Program.SetCulture(Program.CULTURE);
-            }
             var insertQuery = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES ";
 
             foreach (Insulin item in items)
             {
                 insertQuery += $"(FROM_UNIXTIME({item.getTimestamp()} * 0.001),{item.getValue():N1},{getBooleanAsInteger(item.isIsDayDosage())}),";
             }
-
             return insertQuery.Substring(0, insertQuery.Length - 1);
         }
 

@@ -14,6 +14,7 @@ using GalaSoft.MvvmLight;
 using GlukAppWpf.Annotations;
 using OxyPlot;
 using OxyPlot.Wpf;
+using PlotCommands = OxyPlot.Wpf.PlotCommands;
 using Timer = System.Timers.Timer;
 
 namespace GlukAppWpf.ViewModels
@@ -32,13 +33,8 @@ namespace GlukAppWpf.ViewModels
                 RaisePropertyChanged(() => Points);
             }
         }
-
-
-        //DEBUG PROPERTIES
-        private Stack<DataPoint> _stack;
-        private int _range = 50;
-
-
+        
+       
         public GraphViewModel()
         {
             Points = new ObservableCollection<DataPoint>();
@@ -49,38 +45,7 @@ namespace GlukAppWpf.ViewModels
                     Model.InvalidatePlot(true);
                 });
             };
-
-            //DEBUG CODE
-            _stack = new Stack<DataPoint>();
-            List<DataPoint> MyPoints = new List<DataPoint>();
-            MyPoints.Add(new DataPoint(0, 1));
-            for (int i = 1; i < _range; i++)
-            {
-                MyPoints.Add(new DataPoint(i, (i - MyPoints[i - 1].Y) % 13));
-            }
-
-            SetPoints(new ObservableCollection<DataPoint>(MyPoints));
-
-            MyPoints.Reverse();
-            foreach (var point in MyPoints)
-            {
-                _stack.Push(point);
-            }
-            Timer timer  = new Timer(200);
-            timer.Elapsed += (sender, args) =>
-            {
-
-                if (_stack.Count > 0)
-                {
-                    DataPoint p = _stack.Pop();
-                    AddPoint(new DataPoint(p.X + _range, p.Y));
-                }
-                else
-                {
-                    timer.Stop();
-                }
-            };
-            timer.Start();
+            
 
         }
 

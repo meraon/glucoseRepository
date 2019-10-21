@@ -25,9 +25,6 @@ namespace GlukAppWpf.Pages
     public partial class GraphPage : Page
     {
 
-        
-
-
         public GraphPage()
         {
             InitializeComponent();

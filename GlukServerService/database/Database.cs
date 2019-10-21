@@ -1,5 +1,5 @@
 ﻿using GlukModels;
-using GlukServerService.database;
+using GlukModels.DbQuery;
 using MySql.Data.MySqlClient;
 using NLog;
 using System;
