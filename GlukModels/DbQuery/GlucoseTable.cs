@@ -18,9 +18,6 @@ namespace GlukModels.DbQuery
         private const string _timestamp = "timestamp";
         public static string Timestamp => "`" + _timestamp + "`";
 
-        private readonly string BIG_DICK_ENERGY = "oof";
-
-
         public static readonly string CreateTable = "CREATE TABLE IF NOT EXISTS " + TableName +
                                                     " (" + Id + " INT NOT NULL AUTO_INCREMENT," +
                                                     Value + " FLOAT NOT NULL DEFAULT '0'," +
