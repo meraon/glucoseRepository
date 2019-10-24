@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OxyPlot;
 
-namespace GlukAppWpf.DbQuery
+namespace GlukAppWpf.Models
 {
-    public class GlucoseTable
+    public class GlucosePoint
     {
-
-        public static readonly string SELECT = "SELECT * FROM ";
+        private int _id;
 
     }
 }

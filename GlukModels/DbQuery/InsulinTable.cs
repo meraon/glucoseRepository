@@ -25,7 +25,9 @@ namespace GlukModels.DbQuery
                                                     "PRIMARY KEY (" + Id + "))";
         public static readonly string SelectAll = "SELECT * FROM " + _tableName;
         public static readonly string DeleteQuery = "DELETE FROM " + TableName + " WHERE ";
+        public static readonly string UpdateQuery = "DELETE FROM " + TableName + " WHERE ";
 
+        //INSERT
         public static string GetInsertQuery(long timestamp, float value, bool isDayDosage)
         {
             string INSERT_QUERY = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES (FROM_UNIXTIME(%d * 0.001),%f,%d)";
@@ -41,6 +43,7 @@ namespace GlukModels.DbQuery
             }
             return insertQuery.Substring(0, insertQuery.Length - 1);
         }
+        //DELETE
         public static string GetDeleteQuery(Insulin item)
         {
             string query = DeleteQuery + Id + "=" + item.getId();

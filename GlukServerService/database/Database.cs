@@ -35,6 +35,7 @@ namespace GlukServerService
 
         public Database(string dbName)
         {
+            
             _databaseName = dbName;
             _baseConnectionString = "server=" + _server + ";port=" + _port + ";user=" + _user + ";password=" + _password;
             _connectionString = "server=" + _server + ";database=" + _databaseName + ";port=" + _port + ";user=" + _user + ";password=" + _password;
@@ -100,7 +101,7 @@ namespace GlukServerService
                         while (glucosesReader.Read())
                         {
                             glucoses.Add(new Glucose(glucosesReader.GetInt32("_id"),
-                                DateTimeStringToTimestamp(glucosesReader.GetString("timestamp")),
+                                HelperMethods.DateTimeStringToTimestamp(glucosesReader.GetString("timestamp")),
                                 glucosesReader.GetFloat("value")
                                 ));
                         }
@@ -129,8 +130,8 @@ namespace GlukServerService
                     {
                         while (insulinsReader.Read())
                         {
-                            insulins.Add(new Insulin(insulinsReader.GetInt32("_id"), 
-                                DateTimeStringToTimestamp(insulinsReader.GetString("timestamp")),
+                            insulins.Add(new Insulin(insulinsReader.GetInt32("_id"),
+                                HelperMethods.DateTimeStringToTimestamp(insulinsReader.GetString("timestamp")),
                                 insulinsReader.GetFloat("value"), 
                                 insulinsReader.GetInt16("dayDosage") == 1
                             ));
@@ -237,27 +238,5 @@ namespace GlukServerService
             }
             LOG.Info("Backup created.");
         }
-
-        //TODO check if timestamp is correct && change methods location
-        public static long DateTimeStringToTimestamp(string dt)
-        {
-            var dateTime = DateTime.Parse(dt);
-            var totalSeconds = (long)dateTime.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
-            return totalSeconds;
-        }
-
-        public static long DateTimeToTimestamp(DateTime dt)
-        {
-            var totalSeconds = (long)dt.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
-            return totalSeconds;
-        }
-
-        public static DateTime TimestampToDateTime(long timestamp)
-        {
-            DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0);
-            dt = dt.AddSeconds(timestamp); 
-            return dt;
-        }
-        
     }
 }

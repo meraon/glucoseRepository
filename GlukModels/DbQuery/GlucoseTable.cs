@@ -26,6 +26,11 @@ namespace GlukModels.DbQuery
 
         public static readonly string SelectAll = "SELECT * FROM " + TableName;
         public static readonly string DeleteQuery = "DELETE FROM " + TableName + " WHERE ";
+        public static readonly string UpdateQuery = "UPDATE " + TableName + " SET "
+            + Value + "={0},"
+            + Timestamp + "={1} "
+            + "WHERE "
+            + Id + "={2}";
 
         //INSERT
         public static string GetInsertQuery(long timestamp, float value)
@@ -64,6 +69,12 @@ namespace GlukModels.DbQuery
                 query += Id + "=" + glucose.getId() + " OR ";
             }
             return query.Substring(0, query.Length - 4);
+        }
+        //UPDATE
+        public static string GetUpdateQuery(Glucose item)
+        {
+            string query = String.Format(UpdateQuery, item.getValue(), "FROM_UNIXTIME(" + item.getTimestamp() + "*0.001)", item.getId());
+            return query;
         }
 
     }
