@@ -18,6 +18,7 @@ namespace GlukModels
 
         protected EntryModel()
         {
+            Id = -1;
         }
 
         public int getId()
@@ -62,7 +63,23 @@ namespace GlukModels
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (obj is EntryModel item)
+            {
+                return item.getId() == Id
+                       && item.getTimestamp() == Timestamp
+                       && Math.Abs(item.getValue() - Value) < 0.095;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 13;
+            hash = (7 * hash) + Id.GetHashCode();
+            hash = (7 * hash) + Timestamp.GetHashCode();
+            hash = (7 * hash) + Value.GetHashCode();
+            return hash;
         }
     }
 }

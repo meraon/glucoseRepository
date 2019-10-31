@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GlukAppWpf.Pages;
 using GlukModels;
@@ -16,13 +18,16 @@ using OxyPlot.Axes;
 
 namespace GlukAppWpf.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : ViewModelBase
     {
-        public RelayCommand ExportCommand { get; private set; }
-        public RelayCommand ImportCommand { get; private set; }
+        public RelayCommand ExportCommand { get; }
+        public RelayCommand ImportCommand { get; }
+        public RelayCommand ExitCommand { get; }
 
-        private List<Glucose> _glucoses = new List<Glucose>();
-        private List<Insulin> _insulins = new List<Insulin>();
+        private readonly string _connectionString;
+            
+        private ObservableCollection<Glucose> _glucoses = new ObservableCollection<Glucose>();
+        private ObservableCollection<Insulin> _insulins = new ObservableCollection<Insulin>();
 
         private Frame _mainFrame;
 
@@ -31,6 +36,11 @@ namespace GlukAppWpf.ViewModels
 
         public MainViewModel()
         {
+            _glucoses.CollectionChanged += (sender, args) => RaisePropertyChanged(() => _glucoses);
+            _insulins.CollectionChanged += (sender, args) => RaisePropertyChanged(() => _insulins);
+
+            ExitCommand = new RelayCommand(Exit);
+            _connectionString = Connection.GetConnectionString(Directory.GetCurrentDirectory());
             GetDataFromDb();
         }
 
@@ -42,9 +52,7 @@ namespace GlukAppWpf.ViewModels
 
         private void GetDataFromDb()
         {
-            string connectionString = Connection.GetConnectionString(Directory.GetCurrentDirectory());
-
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection conn = new MySqlConnection(_connectionString))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
@@ -82,6 +90,15 @@ namespace GlukAppWpf.ViewModels
                 }
 
             }
+
+            
+        }
+
+
+
+        private void Exit()
+        {
+            Application.Current.Shutdown();
         }
     }
 }

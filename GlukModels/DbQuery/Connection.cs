@@ -8,7 +8,7 @@ using System.Xml.Schema;
 
 namespace GlukModels.DbQuery
 {
-    public class Connection
+    public static class Connection
     {
 
         private static readonly string EncryptionKey = "Zh80OpeH9Y0fSZcjpElGgeVnXIhzlWbp1MDHvmoYGdHflD5L";
@@ -16,14 +16,6 @@ namespace GlukModels.DbQuery
 
 
         public static readonly string FileName = "\\dbConfig.xml";
-        public static readonly List<string> Propertylist = new List<string>()
-        {
-            "server",
-            "databaseName",
-            "port",
-            "user",
-            "password"
-        };
 
         public static Dictionary<string, string> GetConnectionProperties(string pathDir)
         {
@@ -57,7 +49,6 @@ namespace GlukModels.DbQuery
             XDocument xmlDoc = new XDocument(new XElement("DbConfig", elements));
             xmlDoc.Save(pathDir + FileName);
         }
-
 
         public static string Encrypt(string clearText)
         {
@@ -105,17 +96,16 @@ namespace GlukModels.DbQuery
             return cipherText;
         }
 
-
         public static string GetConnectionString(string dirPath)
         {
             var props = GetConnectionProperties(dirPath);
             return "server=" + props["server"] + ";database=" + props["dbName"] + ";port=" + props["port"] + ";user=" + props["user"] + ";password=" + props["password"];
         }
 
-        public static string GetConnectionStringBase()
+        public static string GetConnectionStringBase(string dirPath)
         {
-            //return "server=" + _server + ";port=" + _port + ";user=" + _user + ";password=" + _password;
-            return "";
+            var props = GetConnectionProperties(dirPath);
+            return "server=" + props["server"] + ";port=" + props["port"] + ";user=" + props["user"] + ";password=" + props["password"];
         }
     }
 }

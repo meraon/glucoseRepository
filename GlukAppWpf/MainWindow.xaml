@@ -18,9 +18,9 @@
                 <MenuItem Header="_Export" Command="{Binding ExportCommand}"></MenuItem>
                 <MenuItem Header="_Import" Command="{Binding ImportCommand}"></MenuItem>
                 <Separator/>
-                <MenuItem Header="_Exit"></MenuItem>
+                <MenuItem Header="_Exit" Command="{Binding ExitCommand}"></MenuItem>
             </MenuItem>
         </Menu>
-        <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
+        <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden" Margin="10"/>
     </Grid>
 </Window>
