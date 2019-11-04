@@ -20,7 +20,9 @@ namespace GlukModels.DbQuery
         public static Dictionary<string, string> GetConnectionProperties(string pathDir)
         {
             Dictionary<string, string> properties = new Dictionary<string, string>(20);
-            XDocument xmlDoc = XDocument.Load(new FileStream(pathDir + FileName, FileMode.Open));
+            FileStream fileStream = new FileStream(pathDir + FileName, FileMode.Open);
+
+            XDocument xmlDoc = XDocument.Load(fileStream);
             if (xmlDoc == null)
             {
                 throw new FileNotFoundException("File not found >> " + pathDir + FileName);

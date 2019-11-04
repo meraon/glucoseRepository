@@ -22,61 +22,64 @@ namespace Testing
         static void Main(string[] args)
         {
 
+
+            InitDbWithDummyData(_dbName);
+
             
-            List<MyType> myTypes = new List<MyType>
-            {
-                new MyType("name1"),
-                new MyType("name2"),
-                new MyType("name3"),
-            };
+            //List<MyType> myTypes = new List<MyType>
+            //{
+            //    new MyType("name1"),
+            //    new MyType("name2"),
+            //    new MyType("name3"),
+            //};
 
-            List<MyOtherType> myOtherTypes = new List<MyOtherType>
-            {
-                new MyOtherType(1),
-                new MyOtherType(2),
-                new MyOtherType(3)
-            };
+            //List<MyOtherType> myOtherTypes = new List<MyOtherType>
+            //{
+            //    new MyOtherType(1),
+            //    new MyOtherType(2),
+            //    new MyOtherType(3)
+            //};
 
-            for (int i = 0; i < 3; i++)
-            {
-                mapDictionary.Add(myTypes[i], myOtherTypes[i]);
-            }
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    mapDictionary.Add(myTypes[i], myOtherTypes[i]);
+            //}
             
 
 
-            while (true)
-            {
-                Console.WriteLine();
-                foreach (var key in mapDictionary.Keys)
-                {
-                    Console.WriteLine($"key: {key} , value: {mapDictionary[key]}");
-                }
+            //while (true)
+            //{
+            //    Console.WriteLine();
+            //    foreach (var key in mapDictionary.Keys)
+            //    {
+            //        Console.WriteLine($"key: {key} , value: {mapDictionary[key]}");
+            //    }
 
-                Console.WriteLine("1 - add new\n2 - update value\n");
-                var choice = Console.ReadLine();
-                if (int.TryParse(choice, out int result))
-                {
-                    switch (result)
-                    {
-                        case 1:
-                            if (!AddNewKeyPair())
-                            {
-                                return;
-                            }
-                            break;
-                        case 2:
-                            if (!UpdateValue())
-                            {
-                                return;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
+            //    Console.WriteLine("1 - add new\n2 - update value\n");
+            //    var choice = Console.ReadLine();
+            //    if (int.TryParse(choice, out int result))
+            //    {
+            //        switch (result)
+            //        {
+            //            case 1:
+            //                if (!AddNewKeyPair())
+            //                {
+            //                    return;
+            //                }
+            //                break;
+            //            case 2:
+            //                if (!UpdateValue())
+            //                {
+            //                    return;
+            //                }
+            //                break;
+            //            default:
+            //                break;
+            //        }
+            //    }
                 
                
-            }
+            //}
 
 
 
@@ -229,33 +232,37 @@ namespace Testing
             db.InitDatabase();
             List<Glucose> glucoses = new List<Glucose>();
             List<Insulin> insulins = new List<Insulin>();
+            int j = 0;
+
             for (int i = 0; i < 100; i++)
             {
                 DateTime dt = DateTime.Today.AddDays(i / 4);
                 Glucose item = new Glucose();
                 Insulin insulin = new Insulin();
 
-                if (i % 4 == 0)
+
+
+                if (j == 0)
                 {
-                    insulin.setIsDayDosage(true);
+                    insulin.setIsDayDosage(false);
                     insulin.setValue(16);
                     dt = dt.AddHours(21);
                 }
-                else if (i % 3 == 0)
+                else if (j == 1)
                 {
-                    insulin.setIsDayDosage(false);
+                    insulin.setIsDayDosage(true);
                     insulin.setValue(10);
                     dt = dt.AddHours(17);
                 }
-                else if (i % 2 == 0)
+                else if (j == 2)
                 {
-                    insulin.setIsDayDosage(false);
+                    insulin.setIsDayDosage(true);
                     insulin.setValue(11);
                     dt = dt.AddHours(12);
                 }
                 else
                 {
-                    insulin.setIsDayDosage(false);
+                    insulin.setIsDayDosage(true);
                     insulin.setValue(12);
                     dt = dt.AddHours(7);
                 }
@@ -264,6 +271,9 @@ namespace Testing
                 item.setValue((float)(5 + Math.Abs(5 * Math.Sin(i))));
                 glucoses.Add(item);
                 insulins.Add(insulin);
+                j++;
+                j = j >= 4 ? 0 : j;
+                Console.WriteLine(j);
             }
 
             db.SaveGlucoses(glucoses);

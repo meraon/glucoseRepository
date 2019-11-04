@@ -40,14 +40,28 @@ namespace GlukAppWpf.ViewModels
             _insulins.CollectionChanged += (sender, args) => RaisePropertyChanged(() => _insulins);
 
             ExitCommand = new RelayCommand(Exit);
-            _connectionString = Connection.GetConnectionString(Directory.GetCurrentDirectory());
-            GetDataFromDb();
+ 
         }
 
         public MainViewModel(Frame mainFrame) : this()
         {
             _mainFrame = mainFrame;
-            mainFrame.Content = new GraphPage();
+            var modelController = new ModelController();
+            modelController.LoadData();
+            _mainFrame.Content = new GraphPage(modelController);
+        }
+
+        public MainViewModel(Frame mainFrame, Frame secondFrame) : this(mainFrame)
+        {
+            secondFrame.Content = new TablePage();
+
+            mainFrame.GotFocus += (sender, args) =>
+            {
+                if (sender is GraphPage page)
+                {
+                    page.Refresh();
+                }
+            };
         }
 
         private void GetDataFromDb()

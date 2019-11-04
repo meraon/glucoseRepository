@@ -24,6 +24,7 @@ namespace GlukModels.DbQuery
                                                     Timestamp + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                                                     "PRIMARY KEY (" + Id + "))";
 
+        
         public static readonly string SelectAll = "SELECT * FROM " + TableName;
         public static readonly string DeleteQuery = "DELETE FROM " + TableName + " WHERE ";
         public static readonly string UpdateQuery = "UPDATE " + TableName + " SET "

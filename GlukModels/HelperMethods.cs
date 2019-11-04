@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace GlukModels
 {
-    public class HelperMethods
+    public static class HelperMethods
     {
         public static long DateTimeStringToTimestamp(string dt)
         {
@@ -24,6 +26,16 @@ namespace GlukModels
             DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0);
             dt = dt.AddSeconds(timestamp);
             return dt;
+        }
+
+        public static void Sort<TSource, TKey>(this ObservableCollection<TSource> observableCollection, Func<TSource, TKey> keySelector)
+        {
+            var a = observableCollection.OrderBy(keySelector).ToList();
+            observableCollection.Clear();
+            foreach (var b in a)
+            {
+                observableCollection.Add(b);
+            }
         }
     }
 }
