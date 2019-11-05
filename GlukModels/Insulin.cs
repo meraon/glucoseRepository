@@ -43,5 +43,25 @@ namespace GlukModels
         {
             this._isDayDosage = isDayDosage;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Insulin item)
+            {
+                return item.getId() == Id
+                       && item.getTimestamp() == Timestamp
+                       && item.getValue() == Value
+                       && item.isIsDayDosage() == _isDayDosage;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = base.GetHashCode();
+            hash = (7 * hash) + _isDayDosage.GetHashCode();
+            return hash;
+        }
     }
 }

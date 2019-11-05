@@ -24,5 +24,10 @@ namespace GlukModels
             setTimestamp(timestamp);
             setValue(value);
         }
+
+        public override string ToString()
+        {
+            return $"{Id} , {Timestamp} , {Value}";
+        }
     }
 }

@@ -21,19 +21,21 @@ namespace GlukModels.DbQuery
                                                     " (" + Id + " INT NOT NULL AUTO_INCREMENT," +
                                                     Value + " FLOAT NOT NULL DEFAULT '0'," +
                                                     DayDosage + " TINYINT(1) NOT NULL DEFAULT '1'," +
-                                                    DayDosage + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+                                                    Timestamp + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
                                                     "PRIMARY KEY (" + Id + "))";
-        public static readonly string SelectAll = "SELECT * FROM " + _tableName;
+        public static readonly string SelectAll = "SELECT * FROM " + TableName + "ORDER BY " + Timestamp + " ASC";
         public static readonly string DeleteQuery = "DELETE FROM " + TableName + " WHERE ";
+        public static readonly string UpdateQuery = "DELETE FROM " + TableName + " WHERE ";
 
+        //INSERT
         public static string GetInsertQuery(long timestamp, float value, bool isDayDosage)
         {
-            string INSERT_QUERY = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES (FROM_UNIXTIME(%d * 0.001),%f,%d)";
+            string INSERT_QUERY = "INSERT INTO " + TableName + " (" + Timestamp + "," + Value + "," + DayDosage + ") VALUES (FROM_UNIXTIME(%d * 0.001),%f,%d)";
             return string.Format(INSERT_QUERY, timestamp, value, getBooleanAsInteger(isDayDosage));
         }
         public static string GetInsertQuery(List<Insulin> items)
         {
-            var insertQuery = "INSERT INTO `insulin` (`timestamp`,`value`,`dayDosage`) VALUES ";
+            var insertQuery = "INSERT INTO " + TableName + " (" + Timestamp + "," + Value + "," + DayDosage + ") VALUES ";
 
             foreach (Insulin item in items)
             {
@@ -41,6 +43,7 @@ namespace GlukModels.DbQuery
             }
             return insertQuery.Substring(0, insertQuery.Length - 1);
         }
+        //DELETE
         public static string GetDeleteQuery(Insulin item)
         {
             string query = DeleteQuery + Id + "=" + item.getId();

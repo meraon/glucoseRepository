@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using GlukModels;
 using GlukModels.DbQuery;
+using MySql.Data.MySqlClient;
+using NLog;
 using OxyPlot;
 using OxyPlot.Axes;
 
@@ -19,10 +21,10 @@ namespace GlukAppWpf
 
         private string _connectionString;
 
-        public Dictionary<DataPoint, Glucose> GlucoseDatapoints { get; set; }
-        public Dictionary<DataPoint, Insulin> InsulinDatapoints { get; set; }
+        public Dictionary<DataPoint, Glucose> GlucoseDatapoints { get;  set; }
+        public Dictionary<DataPoint, Insulin> InsulinDatapoints { get;  set; }
 
-        public ObservableCollection<DataPoint> GlucosePoints { get; private set; }
+        public ObservableCollection<DataPoint>  GlucosePoints { get; private set; }
         public ObservableCollection<DataPoint> InsulinPoints { get; private set; }
 
         public ModelController()
@@ -30,7 +32,7 @@ namespace GlukAppWpf
             _connectionString = Connection.GetConnectionString(Directory.GetCurrentDirectory());
             GlucoseDatapoints = new Dictionary<DataPoint, Glucose>();
             InsulinDatapoints = new Dictionary<DataPoint, Insulin>();
-
+            
         }
         public ModelController(string connectionString) : this()
         {
@@ -82,9 +84,9 @@ namespace GlukAppWpf
 
         private void InsulintCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-
+           
         }
-
+        
 
         public void LoadData()
         {
@@ -95,7 +97,7 @@ namespace GlukAppWpf
 
         private void LoadDataFromDb()
         {
-
+            
             using (MySqlConnection conn = new MySqlConnection(_connectionString))
             {
                 conn.Open();
@@ -152,7 +154,7 @@ namespace GlukAppWpf
                             {
                                 LOG.Warn(e.ToString());
                             }
-
+                            
                         }
                     }
                 }
@@ -173,4 +175,10 @@ namespace GlukAppWpf
             return new DataPoint(DateTimeAxis.ToDouble(HelperMethods.TimestampToDateTime(item.getTimestamp())), item.getValue());
         }
     }
+        
+
+        
+
+
+    
 }
