@@ -30,11 +30,11 @@ namespace GlukModels
 
         public static void Sort<TSource, TKey>(this ObservableCollection<TSource> observableCollection, Func<TSource, TKey> keySelector)
         {
-            var a = observableCollection.OrderBy(keySelector).ToList();
-            observableCollection.Clear();
-            foreach (var b in a)
+            var orderedCollection = observableCollection.OrderBy(keySelector).ToList();
+            for (int i = 0; i < orderedCollection.Count; i++)
             {
-                observableCollection.Add(b);
+                int index = observableCollection.IndexOf(orderedCollection[i]);
+                observableCollection.Move(index, i);
             }
         }
     }
