@@ -78,6 +78,7 @@
     </ApplicationDefinition>
     <Compile Include="DbQuery\GlucoseTable.cs" />
     <Compile Include="DbQuery\InsulinTable.cs" />
+    <Compile Include="ModelController.cs" />
     <Compile Include="Pages\GraphPage.xaml.cs">
       <DependentUpon>GraphPage.xaml</DependentUpon>
     </Compile>
