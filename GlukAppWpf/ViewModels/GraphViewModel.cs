@@ -167,6 +167,15 @@ namespace GlukAppWpf.ViewModels
         public GraphViewModel()
         {
             Points = new ObservableCollection<DataPoint>();
+            Points.CollectionChanged += (sender, args) =>
+            {
+                Application.Current.Dispatcher?.Invoke(() =>
+                {
+                    Model.InvalidatePlot(true);
+                });
+            };
+            
+
         }
 
         public GraphViewModel(PlotModel model) : this()
