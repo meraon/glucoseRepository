@@ -156,19 +156,7 @@ namespace GlukServerService
         private void InitDatabaseBackup()
         {
             LOG.Info("Scheduling periodic database backup...");
-            
-            //calculate time to execute every midnight
-            TimeSpan dueTime = new TimeSpan();
-            DateTime now = DateTime.Now;
-            DateTime today = DateTime.Today;
-            if (now.Equals(today))
-            {
-                dueTime = TimeSpan.Zero;
-            }
-            else
-            {
-                dueTime = today.AddDays(1) - now;
-            }
+            var dueTime = GetTimeSpanToMidnight();
             TimeSpan period = new TimeSpan(TimeSpan.TicksPerDay);
 
             _backupTimer = new Timer(x =>
@@ -176,6 +164,23 @@ namespace GlukServerService
                 BackupDatabase();
             }, null, dueTime, period);
 
+        }
+
+        private TimeSpan GetTimeSpanToMidnight()
+        {
+            TimeSpan timeSpan = new TimeSpan();
+            DateTime now = DateTime.Now;
+            DateTime today = DateTime.Today;
+            if (now.Equals(today))
+            {
+                timeSpan = TimeSpan.Zero;
+            }
+            else
+            {
+                timeSpan = today.AddDays(1) - now;
+            }
+
+            return timeSpan;
         }
 
         private void BackupDatabase()

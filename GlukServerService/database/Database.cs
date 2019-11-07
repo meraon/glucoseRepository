@@ -8,7 +8,7 @@ using System.IO;
 
 namespace GlukServerService
 {
-    public class Database
+    public class Database : DataSource
     {
         private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string DateTimeFormat = "d. M. y H:mm:ss";
@@ -24,7 +24,7 @@ namespace GlukServerService
         private string _user = "root";
         private string _password = "";
 
-
+        //TODO read DB parameters from xml (GlukModels.DbQuery.Connection)
         public Database()
         {
             _baseConnectionString = "server=" + _server + ";port=" + _port + ";user=" + _user + ";password=" + _password;
@@ -96,21 +96,28 @@ namespace GlukServerService
                 {
                     command.CommandText = "SELECT * FROM " + GlucoseTable.TableName;
                     var glucosesReader = command.ExecuteReader();
-                    if (glucosesReader.HasRows)
-                    {
-                        while (glucosesReader.Read())
-                        {
-                            glucoses.Add(new Glucose(glucosesReader.GetInt32("_id"),
-                                HelperMethods.DateTimeStringToTimestamp(glucosesReader.GetString("timestamp")),
-                                glucosesReader.GetFloat("value")
-                                ));
-                        }
-                    }
-                    else
-                    {
-                        LOG.Info("No rows found.");
-                    }
+
+                    return ReadGlucosesFromReader(glucosesReader);
                 }
+            }
+        }
+
+        private List<Glucose> ReadGlucosesFromReader(MySqlDataReader glucosesReader)
+        {
+            List<Glucose> glucoses = new List<Glucose>();
+            if (glucosesReader.HasRows)
+            {
+                while (glucosesReader.Read())
+                {
+                    glucoses.Add(new Glucose(glucosesReader.GetInt32("_id"),
+                        HelperMethods.DateTimeStringToTimestamp(glucosesReader.GetString("timestamp")),
+                        glucosesReader.GetFloat("value")
+                    ));
+                }
+            }
+            else
+            {
+                LOG.Info("No rows found.");
             }
 
             return glucoses;
@@ -118,7 +125,6 @@ namespace GlukServerService
 
         public List<Insulin> GetInsulins()
         {
-            List<Insulin> insulins = new List<Insulin>();
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
@@ -126,22 +132,29 @@ namespace GlukServerService
                 {
                     command.CommandText = "SELECT * FROM " + InsulinTable.TableName;
                     var insulinsReader = command.ExecuteReader();
-                    if (insulinsReader.HasRows)
-                    {
-                        while (insulinsReader.Read())
-                        {
-                            insulins.Add(new Insulin(insulinsReader.GetInt32("_id"),
-                                HelperMethods.DateTimeStringToTimestamp(insulinsReader.GetString("timestamp")),
-                                insulinsReader.GetFloat("value"), 
-                                insulinsReader.GetInt16("dayDosage") == 1
-                            ));
-                        }
-                    }
-                    else
-                    {
-                        LOG.Info("No rows found.");
-                    }
+
+                    return ReadInsulinsFromReader(insulinsReader);
                 }
+            }
+        }
+
+        private List<Insulin> ReadInsulinsFromReader(MySqlDataReader insulinsReader)
+        {
+            List<Insulin> insulins = new List<Insulin>();
+            if (insulinsReader.HasRows)
+            {
+                while (insulinsReader.Read())
+                {
+                    insulins.Add(new Insulin(insulinsReader.GetInt32("_id"),
+                        HelperMethods.DateTimeStringToTimestamp(insulinsReader.GetString("timestamp")),
+                        insulinsReader.GetFloat("value"),
+                        insulinsReader.GetInt16("dayDosage") == 1
+                    ));
+                }
+            }
+            else
+            {
+                LOG.Info("No rows found.");
             }
 
             return insulins;
@@ -164,16 +177,12 @@ namespace GlukServerService
 
         public void InitDatabase()
         {
-            using (MySqlConnection connection = new MySqlConnection(_baseConnectionString))
-            {
-                connection.Open();
-                using (MySqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "CREATE DATABASE IF NOT EXISTS `" + _databaseName + "`;";
-                    command.ExecuteNonQuery();
-                }
-            }
+            CreateDatabase();
+            CreateTables();
+        }
 
+        private void CreateTables()
+        {
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
@@ -189,9 +198,19 @@ namespace GlukServerService
                     command.ExecuteNonQuery();
                 }
             }
+        }
 
-            
-
+        private void CreateDatabase()
+        {
+            using (MySqlConnection connection = new MySqlConnection(_baseConnectionString))
+            {
+                connection.Open();
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "CREATE DATABASE IF NOT EXISTS `" + _databaseName + "`;";
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         public void RestoreBackup(string file)

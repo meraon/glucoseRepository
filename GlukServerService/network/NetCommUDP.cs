@@ -37,7 +37,7 @@ namespace GlukServerService.network
                     return;
                 }
                 IPEndPoint sourceEp = new IPEndPoint(0, 0);
-                byte[] message = socket?.EndReceive(result, ref sourceEp);
+                byte[] message = socket.EndReceive(result, ref sourceEp);
                 string msgString = Encoding.ASCII.GetString(message);
 
                 if (IsValidMessage(msgString))

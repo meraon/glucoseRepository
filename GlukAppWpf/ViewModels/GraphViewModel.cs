@@ -119,6 +119,10 @@ namespace GlukAppWpf.ViewModels
 
             RemoveCommand = new RelayCommand(() =>
             {
+                if (Points.Count < 1)
+                {
+                     return;
+                }
                 var point = Points[0];
                 if (Points.Remove(point))
                 {

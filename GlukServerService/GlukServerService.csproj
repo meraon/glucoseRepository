@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="database\Database.cs" />
+    <Compile Include="database\DataSource.cs" />
     <Compile Include="GlukServerService.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -19,16 +19,19 @@ namespace GlukServerService.network
         public static int port = 11123;
 
         private readonly ItemsReceived JsonReceived;
+
         private TcpListener server;
         private TcpClient client;
         private bool _terminate;
-        private bool _running;
+        private bool _isRunning;
 
-        public bool isRunning()
+        public bool IsRunning()
         {
-            return this._running;
+            return _isRunning;
         }
 
+
+        //TODO make TCP comm async
         public NetCommTCP()
         {
             
@@ -52,7 +55,7 @@ namespace GlukServerService.network
             LOG.Info("TCP server started listening...");
             server = new TcpListener(IPAddress.Any, port);
             server.Start();
-            _running = true;
+            _isRunning = true;
             while (!_terminate)
             {
                 try
@@ -64,8 +67,6 @@ namespace GlukServerService.network
                     NetworkStream stream = client.GetStream();
 
                     string json = reader.ReadLine();
-
-                    //LOG.Info("JSON received:\n" + json);
                     
                     if (!IsJsonValid(json))
                     {
@@ -86,7 +87,7 @@ namespace GlukServerService.network
                 }
                 catch (Exception e)
                 {
-                    _running = false;
+                    _isRunning = false;
                     if (e is SocketException ex)
                     {
                         if (ex.ErrorCode == 10004)

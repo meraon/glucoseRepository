@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "GlukServerServiceSetup", "GlukServerServiceSetup\GlukServerServiceSetup.wixproj", "{CC65970F-18A4-4BA8-B9D7-F4929C3EC847}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlukAppWpf", "GlukAppWpf\GlukAppWpf.csproj", "{C7C842D3-D6CA-427F-A707-42FC17E40971}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlukModels", "GlukModels\GlukModels.csproj", "{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlukModels", "GlukModels\GlukModels.csproj", "{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlukAppWpf", "GlukAppWpf\GlukAppWpf.csproj", "{C7C842D3-D6CA-427F-A707-42FC17E40971}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,14 +43,6 @@ Global
 		{CC65970F-18A4-4BA8-B9D7-F4929C3EC847}.Release|Any CPU.ActiveCfg = Release|x86
 		{CC65970F-18A4-4BA8-B9D7-F4929C3EC847}.Release|x86.ActiveCfg = Release|x86
 		{CC65970F-18A4-4BA8-B9D7-F4929C3EC847}.Release|x86.Build.0 = Release|x86
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|x86.Build.0 = Debug|Any CPU
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|x86.ActiveCfg = Release|Any CPU
-		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|x86.Build.0 = Release|Any CPU
 		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -59,6 +51,14 @@ Global
 		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Release|x86.ActiveCfg = Release|Any CPU
 		{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}.Release|x86.Build.0 = Release|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7C842D3-D6CA-427F-A707-42FC17E40971}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
