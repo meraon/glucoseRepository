@@ -47,8 +47,7 @@ namespace GlukAppWpf
                     foreach (var point in args.NewItems)
                     {
                         DataPoint dataPoint = (DataPoint)point;
-                        GlucoseDatapoints.Add(dataPoint, new Glucose(HelperMethods.DateTimeToTimestamp(DateTimeAxis.ToDateTime(dataPoint.X)),
-                            (float)dataPoint.Y));
+                        GlucoseDatapoints.Add(dataPoint, GetGlucoseFromDatapoint(dataPoint));
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -65,8 +64,7 @@ namespace GlukAppWpf
                         DataPoint newPoint = (DataPoint)args.NewItems[i];
                         Glucose glucose = GlucoseDatapoints[oldPoint];
                         GlucoseDatapoints.Remove(oldPoint);
-                        glucose.setTimestamp(HelperMethods.DateTimeToTimestamp(DateTimeAxis.ToDateTime(newPoint.X)));
-                        glucose.setValue((float)newPoint.Y);
+                        UpdateGlucose(glucose, newPoint);
                         GlucoseDatapoints.Add(newPoint, glucose);
                     }
                     break;
@@ -82,7 +80,19 @@ namespace GlukAppWpf
             //TODO notify collection changed
         }
 
-        private void InsulintCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void UpdateGlucose(Glucose glucose, DataPoint point)
+        {
+            glucose.setTimestamp(HelperMethods.DateTimeToTimestamp(DateTimeAxis.ToDateTime(point.X)));
+            glucose.setValue((float) point.Y);
+        }
+
+        private Glucose GetGlucoseFromDatapoint(DataPoint dataPoint)
+        {
+            return new Glucose(HelperMethods.DateTimeToTimestamp(DateTimeAxis.ToDateTime(dataPoint.X)),
+                (float)dataPoint.Y);
+        }
+
+        private void InsulinCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
            
         }
