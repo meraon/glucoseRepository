@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GlukLibrary;
+﻿using GlukLibrary;
 using GlukLibrary.DbQuery;
 using MySql.Data.MySqlClient;
 using NLog;
 using OxyPlot;
 using OxyPlot.Axes;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.IO;
 
 namespace GlukAppWpf
 {

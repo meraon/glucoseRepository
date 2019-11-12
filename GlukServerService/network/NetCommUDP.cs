@@ -10,15 +10,31 @@ namespace GlukServerService.network
     {
         Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private static readonly string IpMulticast = "239.0.0.0";
-        public static readonly string ExpectedMessage = "allo!";
-        int port = 11223;
-        UdpClient server;
         
+        public static readonly string ExpectedMessage = "allo!";
+        private readonly string _ipMulticast = "239.0.0.0";
+        private readonly int _port = 11223;
+
+        UdpClient server;
+
+        public NetCommUDP()
+        {
+        }
+
+        public NetCommUDP(int port)
+        {
+            _port = port;
+        }
+
+        public NetCommUDP(int port, string ipMulticast) : this(port)
+        {
+            _ipMulticast = ipMulticast;
+        }
+
         public void Listen()
         {
-            server = new UdpClient(port);
-            server.JoinMulticastGroup(IPAddress.Parse(IpMulticast));
+            server = new UdpClient(_port);
+            server.JoinMulticastGroup(IPAddress.Parse(_ipMulticast));
             server.BeginReceive(OnDataReceived, server);
         }
 
@@ -48,7 +64,7 @@ namespace GlukServerService.network
                 else if (msgString.Trim().Equals("end"))
                 {
                     socket.Close();
-                    LOG.Warn("Closed UDP server");
+                    LOG.Warn("Closed UDP server.");
                     return;
                 }
                 socket.BeginReceive(OnDataReceived, socket);

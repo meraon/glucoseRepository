@@ -31,7 +31,8 @@ namespace GlukServerService.network
         }
 
 
-        //TODO make TCP comm async
+        //TODO make TCP comm async. use cancelation token
+
         public NetCommTCP()
         {
             
@@ -49,13 +50,16 @@ namespace GlukServerService.network
         }
 
         
-
+        /// <summary>
+        /// Starts listening for incoming clients
+        /// </summary>
         public void Listen()
         {
             LOG.Info("TCP server started listening...");
             server = new TcpListener(IPAddress.Any, port);
             server.Start();
             _isRunning = true;
+
             while (!_terminate)
             {
                 try
@@ -67,16 +71,16 @@ namespace GlukServerService.network
                     NetworkStream stream = client.GetStream();
 
                     string json = reader.ReadLine();
-                    
+
+                    //send response
                     if (!IsJsonValid(json))
                     {
-                        //send response 
                         var responseRejected = Encoding.ASCII.GetBytes(ObjectRejectedMessage);
                         stream.Write(responseRejected, 0, responseRejected.Length);
                         stream.Flush();
                         continue;
                     }
-                    //send response 
+                    
                     var responseOk = Encoding.ASCII.GetBytes(ObjectAcceptedMessage);
                     stream.Write(responseOk, 0, responseOk.Length);
                     stream.Flush();

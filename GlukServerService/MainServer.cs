@@ -14,7 +14,7 @@ namespace GlukServerService
 {
     public class MainServer
     {
-        private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         private NetCommTCP _tcpServer;
         private NetCommUDP _netCommUdp;
         private Database _db;
@@ -26,39 +26,14 @@ namespace GlukServerService
             LOG.Info("Initializing main server...");
             _db = new Database();
             _netCommUdp = new NetCommUDP();
-            _tcpServer = new NetCommTCP(json =>
-
-            {
-                try
-                {
-                    if (json.Contains("isDayDosage"))
-                    {
-                        var jArray = JArray.Parse(json);
-                        var items = jArray.ToObject<List<Insulin>>();
-                        SaveInsulins(items);
-                    }
-                    else
-                    {
-                        var jArray = JArray.Parse(json);
-                        var items = jArray.ToObject<List<Glucose>>();
-                        SaveGlucoses(items);
-                    }
-                }
-                catch (JsonReaderException ex)
-                {
-                    LOG.Warn(
-                        $"Error encountered while parsing received JSON on line {ex.LineNumber} position {ex.LinePosition}\nJSON: {json}");
-                }
-
-            });
+            _tcpServer = new NetCommTCP(JsonReceived);
 
             ProcessStartUpParameters();
-            InitDatabaseBackup();
+            ScheduleDatabaseBackup();
 
             LOG.Info("Main server initialized.");
 
         }
-        
         public MainServer(ItemsReceived itemsReceived)
         {
             LOG.Info("Initializing main server...");
@@ -67,7 +42,7 @@ namespace GlukServerService
             _tcpServer = new NetCommTCP(itemsReceived);
 
             ProcessStartUpParameters();
-            InitDatabaseBackup();
+            ScheduleDatabaseBackup();
 
             LOG.Info("Main server initialized.");
         }
@@ -86,6 +61,33 @@ namespace GlukServerService
             _backupTimer?.Dispose();
             _tcpServer?.Terminate();
             _netCommUdp?.Terminate();
+
+        }
+
+        private void JsonReceived(string json)
+        {
+            LOG.Info("Json received");
+
+            try
+            {
+                if (json.Contains("isDayDosage"))
+                {
+                    var jArray = JArray.Parse(json);
+                    var items = jArray.ToObject<List<Insulin>>();
+                    SaveInsulins(items);
+                }
+                else
+                {
+                    var jArray = JArray.Parse(json);
+                    var items = jArray.ToObject<List<Glucose>>();
+                    SaveGlucoses(items);
+                }
+            }
+            catch (JsonReaderException ex)
+            {
+                LOG.Warn(
+                    $"Error encountered while parsing received JSON on line {ex.LineNumber} position {ex.LinePosition}\nJSON: {json}");
+            }
         }
 
         public void SaveGlucoses(List<Glucose> items)
@@ -153,7 +155,7 @@ namespace GlukServerService
             }
         }
 
-        private void InitDatabaseBackup()
+        private void ScheduleDatabaseBackup()
         {
             LOG.Info("Scheduling periodic database backup...");
             var dueTime = GetTimeSpanToMidnight();

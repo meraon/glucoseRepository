@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GlukAppWpf.Pages;
-using GlukModels;
-using GlukModels.DbQuery;
+using GlukLibrary;
+using GlukLibrary.DbQuery;
 using MySql.Data.MySqlClient;
 using OxyPlot;
-using OxyPlot.Axes;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace GlukAppWpf.ViewModels
 {
