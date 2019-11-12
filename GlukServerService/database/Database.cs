@@ -1,10 +1,10 @@
-﻿using GlukModels;
-using GlukModels.DbQuery;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using GlukLibrary;
+using GlukLibrary.DbQuery;
 
 namespace GlukServerService
 {

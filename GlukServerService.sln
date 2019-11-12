@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "GlukServerServiceSetup", "GlukServerServiceSetup\GlukServerServiceSetup.wixproj", "{CC65970F-18A4-4BA8-B9D7-F4929C3EC847}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlukModels", "GlukModels\GlukModels.csproj", "{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlukLibrary", "GlukModels\GlukLibrary.csproj", "{4D612DD7-499B-4ECC-BE0F-FA864EBB5B60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlukAppWpf", "GlukAppWpf\GlukAppWpf.csproj", "{C7C842D3-D6CA-427F-A707-42FC17E40971}"
 EndProject

@@ -171,7 +171,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GlukModels\GlukModels.csproj">
+    <ProjectReference Include="..\GlukModels\GlukLibrary.csproj">
       <Project>{4d612dd7-499b-4ecc-be0f-fa864ebb5b60}</Project>
       <Name>GlukModels</Name>
     </ProjectReference>

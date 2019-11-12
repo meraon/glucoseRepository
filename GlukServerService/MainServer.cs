@@ -1,5 +1,4 @@
-﻿using GlukModels;
-using GlukServerService.network;
+﻿using GlukServerService.network;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using GlukLibrary;
 
 namespace GlukServerService
 {

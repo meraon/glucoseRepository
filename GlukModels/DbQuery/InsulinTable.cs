@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
-namespace GlukModels.DbQuery
+namespace GlukLibrary.DbQuery
 {
     public class InsulinTable
     {

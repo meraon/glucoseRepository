@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using GlukModels;
+using GlukLibrary;
 
 namespace GlukServerService
 {

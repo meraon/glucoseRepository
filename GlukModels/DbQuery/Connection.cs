@@ -6,7 +6,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
-namespace GlukModels.DbQuery
+namespace GlukLibrary.DbQuery
 {
     public static class Connection
     {
