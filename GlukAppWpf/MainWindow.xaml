@@ -12,11 +12,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Menu Grid.Column="0" Height="Auto" Grid.ColumnSpan="2">
+
+        <Menu Grid.Column="0" Grid.Row="0" Height="Auto">
             <MenuItem Header="_File">
                 <MenuItem Header="_Save" Command="Save"></MenuItem>
                 <MenuItem Header="_Export" Command="{Binding ExportCommand}"></MenuItem>
@@ -26,6 +23,5 @@
             </MenuItem>
         </Menu>
         <Frame x:Name="MainFrame" Grid.Row="1" Grid.Column="0" NavigationUIVisibility="Hidden" Margin="10"/>
-        <Frame x:Name="SecondFrame" Grid.Row="1" Grid.Column="1" NavigationUIVisibility="Hidden" Margin="10"/>
     </Grid>
 </Window>

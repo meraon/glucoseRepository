@@ -29,7 +29,7 @@ namespace GlukAppWpf
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel(MainFrame, SecondFrame);
+            DataContext = new MainViewModel(MainFrame);
         }
     }
 }

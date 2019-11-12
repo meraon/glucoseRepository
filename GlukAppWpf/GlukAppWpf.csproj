@@ -102,8 +102,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DbQuery\GlucoseTable.cs" />
-    <Compile Include="DbQuery\InsulinTable.cs" />
     <Compile Include="ModelController.cs" />
     <Compile Include="Models\GlucosePoint.cs" />
     <Compile Include="Pages\GraphPage.xaml.cs">

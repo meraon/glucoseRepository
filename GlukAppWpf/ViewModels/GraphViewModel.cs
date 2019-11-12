@@ -13,7 +13,7 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GlukAppWpf.Annotations;
-using GlukModels;
+using GlukLibrary;
 using OxyPlot;
 using OxyPlot.Axes;
 using PlotCommands = OxyPlot.Wpf.PlotCommands;
