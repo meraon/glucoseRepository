@@ -12,7 +12,7 @@
   </a>
 </p>
 
-> This psolution allows users to store and view measured glucoses and applied insulins to database. Service represents application server. 
+> This solution allows users to store and view measured glucoses and applied insulins to database. Service represents application server. Link to mobile app associated with this solutution [GlukApp](https://github.com/meraon/GlukApp)
 
 ### 🏠 [Homepage](https://github.com/kefranabg/readme-md-generator#readme)
 
