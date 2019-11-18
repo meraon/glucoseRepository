@@ -24,7 +24,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <oxy:Plot x:Name="Plot" Grid.Row="0" Grid.ColumnSpan="4">
+        <oxy:Plot x:Name="Plot" Grid.Row="0" Grid.ColumnSpan="4" Margin="10">
             <oxy:Plot.Axes>
                 <oxy:DateTimeAxis Title="Date Time" Position="Bottom" ></oxy:DateTimeAxis>
                 <oxy:LinearAxis Title="Y" Position="Left"></oxy:LinearAxis>
@@ -33,15 +33,6 @@
                 <oxy:LineSeries ItemsSource="{Binding Points}" />
             </oxy:Plot.Series>
         </oxy:Plot>
-        <Button Grid.Row="1" Grid.Column="0" Width="60" Height="30" Content="Load" Command="{Binding LoadDataCommand}"></Button>
-        <Button Grid.Row="2" Grid.Column="0" Width="60" Height="30" Content="Add" Command="{Binding AddCommand}"></Button>
-        <Button Grid.Row="3" Grid.Column="0" Width="60" Height="30" Content="Remove" Command="{Binding RemoveCommand}"></Button>
-        <Button Grid.Row="4" Grid.Column="0" Width="60" Height="30" Content="Update" Command="{Binding UpdateCommand}"></Button>
-        <TextBlock Grid.Row="1" Grid.Column="1" Width="740" TextWrapping="Wrap" Text="{Binding LoadText}"></TextBlock>
-        <TextBlock Grid.Row="2" Grid.Column="1" Width="740" TextWrapping="Wrap" Text="{Binding AddText}"></TextBlock>
-        <TextBlock Grid.Row="3" Grid.Column="1" Width="740" TextWrapping="Wrap" Text="{Binding RemoveText}" ></TextBlock>
-        <TextBlock Grid.Row="4" Grid.Column="1" Width="740" TextWrapping="Wrap" Text="{Binding UpdateText}"></TextBlock>
-        <Button Grid.Row="1" Grid.Column="2" Width="60" Height="30" Content="Sort" Command="{Binding SortCommand}"/>
     </Grid>
 </Page>
 

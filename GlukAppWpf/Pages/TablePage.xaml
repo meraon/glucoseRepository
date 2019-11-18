@@ -9,8 +9,13 @@
       Title="TablePage">
 
     <Grid>
+        <Grid.RowDefinitions>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>
         
-        <Button Content="HALLO BUTTON" Height="30" Width="100"></Button>
+
     </Grid>
-    
+
+
 </Page>
