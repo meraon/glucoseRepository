@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using NLog;
 
 namespace GlukLibrary
 {
     public static class HelperMethods
     {
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+
         public static long DateTimeStringToTimestamp(string dt)
         {
             var dateTime = DateTime.Parse(dt);
@@ -33,6 +37,49 @@ namespace GlukLibrary
             {
                 observableCollection.Move(observableCollection.IndexOf(a[i]), i);
             }
+        }
+
+        public static bool WaitForFile(string fullPath, int count)
+        {
+            int numTries = 0;
+            while (true)
+            {
+                ++numTries;
+                try
+                {
+                    // Attempt to open the file exclusively.
+                    using (FileStream fs = new FileStream(fullPath,
+                        FileMode.Open, FileAccess.ReadWrite,
+                        FileShare.None, 100))
+                    {
+                        fs.ReadByte();
+
+                        // If we got this far the file is ready
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LOG.Warn(
+                        "WaitForFile {0} failed to get an exclusive lock: {1}",
+                        fullPath, ex.ToString());
+
+                    if (numTries > count)
+                    {
+                        LOG.Warn(
+                            "WaitForFile {0} giving up after 10 tries",
+                            fullPath);
+                        return false;
+                    }
+
+                    // Wait for the lock to be released
+                    System.Threading.Thread.Sleep(100);
+                }
+            }
+
+            LOG.Info("WaitForFile {0} returning true after {1} tries",
+                fullPath, numTries);
+            return true;
         }
     }
 }

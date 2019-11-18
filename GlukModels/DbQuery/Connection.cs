@@ -5,11 +5,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using NLog;
 
 namespace GlukLibrary.DbQuery
 {
     public static class Connection
     {
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private static readonly string EncryptionKey = "Zh80OpeH9Y0fSZcjpElGgeVnXIhzlWbp1MDHvmoYGdHflD5L";
         private static readonly string Salt = "NZRUJ48wLd2g+3BS0tVmjA==";
@@ -17,27 +19,38 @@ namespace GlukLibrary.DbQuery
 
         public static readonly string FileName = "\\dbConfig.xml";
 
-        public static Dictionary<string, string> GetConnectionProperties(string pathDir)
+        public static Dictionary<string, string> GetConnectionProperties(string pathDir, bool waitForUnlock = true)
         {
             Dictionary<string, string> properties = new Dictionary<string, string>(20);
-            FileStream fileStream = new FileStream(pathDir + FileName, FileMode.Open);
-
-            XDocument xmlDoc = XDocument.Load(fileStream);
-            if (xmlDoc == null)
+            using (FileStream fileStream = new FileStream(pathDir + FileName, FileMode.Open))
             {
-                throw new FileNotFoundException("File not found >> " + pathDir + FileName);
+                try
+                {
+                    XDocument xmlDoc = XDocument.Load(fileStream);
+                    var elements = xmlDoc.Root?.Elements();
+                    if (elements == null)
+                    {
+                        throw new XmlSchemaException();
+                    }
+                    foreach (var element in elements)
+                    {
+                        properties.Add(element.Name.LocalName,
+                            element.Name.LocalName == "password" ? Decrypt(element.Value) : element.Value);
+                    }
+                }
+                catch (IOException e)
+                {
+                    if (waitForUnlock)
+                    {
+                        HelperMethods.WaitForFile(pathDir + FileName, 10);
+                        GetConnectionProperties(pathDir, false);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }    
             }
-            var elements = xmlDoc.Root?.Elements();
-            if (elements == null)
-            {
-                throw new XmlSchemaException();
-            }
-            foreach (var element in elements)
-            {
-                properties.Add(element.Name.LocalName, 
-                    element.Name.LocalName == "password" ? Decrypt(element.Value) : element.Value);
-            }
-
             return properties;
         }
 
@@ -109,5 +122,6 @@ namespace GlukLibrary.DbQuery
             var props = GetConnectionProperties(dirPath);
             return "server=" + props["server"] + ";port=" + props["port"] + ";user=" + props["user"] + ";password=" + props["password"];
         }
+        
     }
 }

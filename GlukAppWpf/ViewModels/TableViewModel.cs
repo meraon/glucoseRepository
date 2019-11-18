@@ -6,6 +6,9 @@ namespace GlukAppWpf.ViewModels
 {
     public class TableViewModel : ViewModelBase
     {
+        private ModelController _modelController;
+
+
         private ObservableCollection<DataPoint> _points;
         public ObservableCollection<DataPoint> Points
         {
@@ -23,9 +26,9 @@ namespace GlukAppWpf.ViewModels
             
         }
 
-        public TableViewModel(ObservableCollection<DataPoint> points) : this()
+        public TableViewModel(ModelController modelController) : this()
         {
-            Points = points;
+            _modelController = modelController;
         }
     }
 }

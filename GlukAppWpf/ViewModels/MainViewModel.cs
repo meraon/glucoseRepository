@@ -1,11 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GlukAppWpf.Pages;
-using GlukLibrary;
-using GlukLibrary.DbQuery;
-using MySql.Data.MySqlClient;
-using OxyPlot;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,16 +8,16 @@ namespace GlukAppWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        public RelayCommand ExportCommand { get; }
-        public RelayCommand ImportCommand { get; }
-        public RelayCommand ExitCommand { get; }
+        public RelayCommand GraphCommand { get; private set; }
+        public RelayCommand TableCommand { get; private set; }
+        public RelayCommand ExitCommand { get; private set; }
 
         private Frame _mainFrame;
         private ModelController _modelController;
 
         public MainViewModel()
         {
-            ExitCommand = new RelayCommand(Exit);
+            InitCommands();
         }
 
         public MainViewModel(Frame mainFrame) : this()
@@ -32,6 +27,22 @@ namespace GlukAppWpf.ViewModels
             _mainFrame.Content = new GraphPage(_modelController);
         }
 
+        private void InitCommands()
+        {
+            GraphCommand = new RelayCommand(ShowGraph);
+            TableCommand = new RelayCommand(ShowTable);
+            ExitCommand = new RelayCommand(Exit);
+        }
+
+        private void ShowGraph()
+        {
+            _mainFrame.Content = new GraphPage(_modelController);
+        }
+
+        private void ShowTable()
+        {
+            _mainFrame.Content = new TablePage(_modelController);
+        }
 
         private void Exit()
         {

@@ -50,8 +50,8 @@ namespace GlukAppWpf.ViewModels
         {
             Model = model;
             _modelController = modelController;
-            Points = _modelController.GetGlucoseDataPoints();
-            Points.Sort(point => point.X);
+            //Points = _modelController.GetGlucoseDataPoints();
+            //Points.Sort(point => point.X);
         }
 
         public GraphViewModel(PlotModel model, ObservableCollection<DataPoint> points)

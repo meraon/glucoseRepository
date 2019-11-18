@@ -28,9 +28,9 @@ namespace GlukAppWpf.Pages
             InitializeComponent();
         }
 
-        public TablePage(ObservableCollection<DataPoint> points) : this()
+        public TablePage(ModelController modelController) : this()
         {
-            DataContext = new TableViewModel(points);
+            DataContext = new TableViewModel(modelController);
         }
     }
 }

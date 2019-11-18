@@ -21,6 +21,10 @@
                 <Separator/>
                 <MenuItem Header="_Exit" Command="{Binding ExitCommand}"></MenuItem>
             </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="_Graph" Command="{Binding GraphCommand}"/>
+                <MenuItem Header="_Table" Command="{Binding TableCommand}"/>
+            </MenuItem>
         </Menu>
         <Frame x:Name="MainFrame" Grid.Row="1" Grid.Column="0" NavigationUIVisibility="Hidden" Margin="10"/>
     </Grid>
