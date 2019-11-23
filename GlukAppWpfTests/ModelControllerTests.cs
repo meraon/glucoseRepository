@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlukAppWpf.Models;
 using GlukLibrary;
 using GlukLibrary.DbQuery;
 using OxyPlot;
@@ -19,10 +20,10 @@ namespace GlukAppWpf.Tests
         [TestMethod()]
         public void GlucoseCollectionChangedAddTest()
         {
-            ModelController modelController = new ModelController();
-            Glucose value = new Glucose(HelperMethods.DateTimeToTimestamp(DateTime.Now), 9.0f);
+            ModelProvider modelController = new ModelProvider();
+            GlucoseItem value = new GlucoseItem(DateTime.Now, 9.0f);
             modelController.Glucoses.Add(value);
-            DataPoint point = ModelController.ModelToDataPoint(value);
+            DataPoint point = ModelProvider.ModelToDataPoint(value);
 
             Assert.IsTrue(modelController.GlucoseDataPoints.Contains(point));
 
@@ -34,7 +35,7 @@ namespace GlukAppWpf.Tests
         [TestMethod()]
         public void GlucoseCollectionChangedRemoveTest()
         {
-            ModelController modelController = new ModelController();
+            ModelProvider modelController = new ModelProvider();
             Random r = new Random();
             int max = modelController.Glucoses.Count / 2;
 
@@ -53,11 +54,11 @@ namespace GlukAppWpf.Tests
         [TestMethod]
         public void GlucoseCollectionChangedReplaceTest()
         {
-            ModelController modelController = new ModelController();
-            var glucose = new Glucose(HelperMethods.DateTimeToTimestamp(DateTime.Now), 9.0f);
+            ModelProvider modelController = new ModelProvider();
+            var glucose = new GlucoseItem(DateTime.Now, 9.0f);
 
             modelController.Glucoses[0] = glucose;
-            var point = ModelController.ModelToDataPoint(glucose);
+            var point = ModelProvider.ModelToDataPoint(glucose);
             
             Assert.IsTrue(modelController.GlucoseDataPoints.Contains(point));
 
@@ -68,7 +69,7 @@ namespace GlukAppWpf.Tests
         [TestMethod]
         public void GlucoseCollectionChangedResetTest()
         {
-            ModelController modelController = new ModelController();
+            ModelProvider modelController = new ModelProvider();
             modelController.Glucoses.Clear();
             Assert.IsTrue(modelController.GlucoseDataPoints.Count == 0);
         }
@@ -76,10 +77,10 @@ namespace GlukAppWpf.Tests
         [TestMethod()]
         public void InsulinCollectionChangedAddTest()
         {
-            ModelController modelController = new ModelController();
-            Insulin value = new Insulin(HelperMethods.DateTimeToTimestamp(DateTime.Now), 9.0f, true);
+            ModelProvider modelController = new ModelProvider();
+            InsulinItem value = new InsulinItem(DateTime.Now, 9.0f, true);
             modelController.Insulins.Add(value);
-            DataPoint point = ModelController.ModelToDataPoint(value);
+            DataPoint point = ModelProvider.ModelToDataPoint(value);
 
             Assert.IsTrue(modelController.InsulinDataPoints.Contains(point));
 
@@ -91,7 +92,7 @@ namespace GlukAppWpf.Tests
         [TestMethod()]
         public void InsulinCollectionChangedRemoveTest()
         {
-            ModelController modelController = new ModelController();
+            ModelProvider modelController = new ModelProvider();
             Random r = new Random();
             int max = modelController.Insulins.Count / 2;
 
@@ -109,11 +110,11 @@ namespace GlukAppWpf.Tests
         [TestMethod]
         public void InsulinCollectionChangedReplaceTest()
         {
-            ModelController modelController = new ModelController();
-            var glucose = new Insulin(HelperMethods.DateTimeToTimestamp(DateTime.Now), 9.0f, true);
+            ModelProvider modelController = new ModelProvider();
+            var glucose = new InsulinItem(DateTime.Now, 9.0f, true);
 
             modelController.Insulins[0] = glucose;
-            var point = ModelController.ModelToDataPoint(glucose);
+            var point = ModelProvider.ModelToDataPoint(glucose);
 
             Assert.IsTrue(modelController.InsulinDataPoints.Contains(point));
 
@@ -123,31 +124,31 @@ namespace GlukAppWpf.Tests
         [TestMethod]
         public void InsulinCollectionChangedResetTest()
         {
-            ModelController modelController = new ModelController();
+            ModelProvider modelController = new ModelProvider();
             modelController.Insulins.Clear();
             Assert.IsTrue(modelController.InsulinDataPoints.Count == 0);
         }
 
-        private static void CheckGlucosesSorted(ModelController modelController)
+        private static void CheckGlucosesSorted(ModelProvider modelController)
         {
             var glucoses = modelController.Glucoses;
-            glucoses.Sort(x => x.getTimestamp());
+            glucoses.Sort(x => x.Date);
             int count = glucoses.Count;
             for (int i = 0; i < count; i++)
             {
-                var point = ModelController.ModelToDataPoint(glucoses[i]);
+                var point = ModelProvider.ModelToDataPoint(glucoses[i]);
                 Assert.IsTrue(modelController.GlucoseDataPoints[i].Equals(point));
             }
         }
 
-        private static void CheckInsulinsSorted(ModelController modelController)
+        private static void CheckInsulinsSorted(ModelProvider modelController)
         {
             var insulins = modelController.Insulins;
-            insulins.Sort(x => x.getTimestamp());
+            insulins.Sort(x => x.Date);
             int count = insulins.Count;
             for (int i = 0; i < count; i++)
             {
-                var point = ModelController.ModelToDataPoint(insulins[i]);
+                var point = ModelProvider.ModelToDataPoint(insulins[i]);
                 Assert.IsTrue(modelController.InsulinDataPoints[i].Equals(point));
             }
         }

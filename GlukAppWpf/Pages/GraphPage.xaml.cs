@@ -36,34 +36,22 @@ namespace GlukAppWpf.Pages
             DataContext = _context;
         }
 
-        public GraphPage(ModelController modelController)
+        public GraphPage(ModelProvider modelController)
         {
             InitializeComponent();
             DataContext = new GraphViewModel(Plot.ActualModel, modelController);
+        }
+
+        public GraphPage(ModelProvider modelController, DataSource source)
+        {
+            InitializeComponent();
+            DataContext = new GraphViewModel(Plot.ActualModel, modelController, source);
         }
 
         public GraphPage(ObservableCollection<DataPoint> points)
         {
             InitializeComponent();
             DataContext = new GraphViewModel(Plot.ActualModel, points);
-        }
-
-        public void Refresh()
-        {
-            _context.Refresh();
-        }
-
-        protected override void OnGotFocus(RoutedEventArgs e)
-        {
-            
-            base.OnGotFocus(e);
-            
-
-        }
-
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            base.OnLostFocus(e);
         }
     }
 }

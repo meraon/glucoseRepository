@@ -11,28 +11,31 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows.Data;
+using GalaSoft.MvvmLight;
+using GlukAppWpf.Models;
+using GlukAppWpf.ViewModels;
 
 namespace GlukAppWpf
 {
-    public class ModelController
+    public class ModelProvider
     {
         private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
         private readonly string _connectionString;
 
-        public ObservableCollection<Glucose> Glucoses { get; private set; }
-        public ObservableCollection<Insulin> Insulins { get; private set; }
+        public ObservableCollection<GlucoseItem> Glucoses { get; private set; }
+        public ObservableCollection<InsulinItem> Insulins { get; private set; }
 
         public ObservableCollection<DataPoint> GlucoseDataPoints { get; private set; }
         public ObservableCollection<DataPoint> InsulinDataPoints { get; private set; }
 
-        public ModelController()
+        public ModelProvider()
         {
             _connectionString = Connection.GetConnectionString(Directory.GetCurrentDirectory());
             LoadData();
         }
 
-        public ModelController(string connectionString)
+        public ModelProvider(string connectionString)
         {
             _connectionString = connectionString;
             LoadData();
@@ -82,11 +85,11 @@ namespace GlukAppWpf
             Insulins.CollectionChanged += InsulinCollectionChanged;
         }
 
-        private ObservableCollection<Insulin> GetInsulinsFromDb(MySqlConnection conn)
+        private ObservableCollection<InsulinItem> GetInsulinsFromDb(MySqlConnection conn)
         {
             try
             {
-                ObservableCollection<Insulin> insulins = new ObservableCollection<Insulin>();
+                ObservableCollection<InsulinItem> insulins = new ObservableCollection<InsulinItem>();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = InsulinTable.SelectAll;
@@ -96,10 +99,14 @@ namespace GlukAppWpf
 
                     while (reader.Read())
                     {
-                        Insulin insulin = new Insulin(reader.GetInt32("_id"),
-                            HelperMethods.DateTimeStringToTimestamp(reader.GetString("timestamp")),
-                            reader.GetFloat("value"),
-                            reader.GetInt16("dayDosage") == 1
+                        var id = reader.GetInt32("_id");
+                        var dateTime = DateTime.Parse(reader.GetString("timestamp"));
+                        var value = reader.GetFloat("value");
+                        var dayDosage = reader.GetInt16("dayDosage") == 1;
+                        InsulinItem insulin = new InsulinItem(id,
+                            dateTime, 
+                            value,
+                            dayDosage
                         );
                         try
                         {
@@ -121,11 +128,11 @@ namespace GlukAppWpf
             }
         }
 
-        private ObservableCollection<Glucose> GetGlucosesFromDb(MySqlConnection conn)
+        private ObservableCollection<GlucoseItem> GetGlucosesFromDb(MySqlConnection conn)
         {
             try
             {
-                ObservableCollection<Glucose> glucoses = new ObservableCollection<Glucose>();
+                ObservableCollection<GlucoseItem> glucoses = new ObservableCollection<GlucoseItem>();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = GlucoseTable.SelectAll;
@@ -135,9 +142,12 @@ namespace GlukAppWpf
 
                     while (reader.Read())
                     {
-                        Glucose glucose = new Glucose(reader.GetInt32("_id"),
-                            HelperMethods.DateTimeStringToTimestamp(reader.GetString("timestamp")),
-                            reader.GetFloat("value"));
+                        var id = reader.GetInt32("_id");
+                        var dateTime = DateTime.Parse(reader.GetString("timestamp"));
+                        var value = reader.GetFloat("value");
+                        GlucoseItem glucose = new GlucoseItem(id,
+                            dateTime,
+                            value);
                         try
                         {
                             glucoses.Add(glucose);
@@ -158,9 +168,9 @@ namespace GlukAppWpf
             }
         }
 
-        public static DataPoint ModelToDataPoint(EntryModel item)
+        public static DataPoint ModelToDataPoint(ItemBase item)
         {
-            return new DataPoint(DateTimeAxis.ToDouble(HelperMethods.TimestampToDateTime(item.getTimestamp())), item.getValue());
+            return new DataPoint(DateTimeAxis.ToDouble(item.Date), item.Value);
         }
 
         private void GlucoseCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -169,14 +179,14 @@ namespace GlukAppWpf
             {
                 case NotifyCollectionChangedAction.Add:
                     
-                    foreach (Glucose glucose in args.NewItems)
+                    foreach (GlucoseItem glucose in args.NewItems)
                     {
                         AddGlucoseDatapoint(glucose);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
 
-                    foreach (Glucose glucose in args.OldItems)
+                    foreach (GlucoseItem glucose in args.OldItems)
                     {
                         var point = ModelToDataPoint(glucose);
                         GlucoseDataPoints.Remove(point);
@@ -186,7 +196,7 @@ namespace GlukAppWpf
                     int count = args.OldItems.Count;
                     for (int i = 0; i < count; i++)
                     {
-                        var glucose = args.OldItems[i] as Glucose;
+                        var glucose = args.OldItems[i] as GlucoseItem;
                         var point = ModelToDataPoint(glucose);
                         if (!GlucoseDataPoints.Contains(point))
                         {
@@ -194,7 +204,7 @@ namespace GlukAppWpf
                         }
 
                         GlucoseDataPoints.Remove(point);
-                        var newGlucose = args.NewItems[i] as Glucose;
+                        var newGlucose = args.NewItems[i] as GlucoseItem;
                         AddGlucoseDatapoint(newGlucose);
                     }
 
@@ -216,14 +226,14 @@ namespace GlukAppWpf
             {
                 case NotifyCollectionChangedAction.Add:
 
-                    foreach (Insulin insulin in args.NewItems)
+                    foreach (InsulinItem insulin in args.NewItems)
                     {
                         AddInsulinDatapoint(insulin);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
 
-                    foreach (Insulin insulin in args.OldItems)
+                    foreach (InsulinItem insulin in args.OldItems)
                     {
                         var point = ModelToDataPoint(insulin);
                         if (!InsulinDataPoints.Remove(point))
@@ -236,7 +246,7 @@ namespace GlukAppWpf
                     int count = args.OldItems.Count;
                     for (int i = 0; i < count; i++)
                     {
-                        var insulin = args.OldItems[i] as Insulin;
+                        var insulin = args.OldItems[i] as InsulinItem;
                         var point = ModelToDataPoint(insulin);
                         if (!InsulinDataPoints.Contains(point))
                         {
@@ -244,7 +254,7 @@ namespace GlukAppWpf
                         }
 
                         InsulinDataPoints.Remove(point);
-                        var newInsulin = args.NewItems[i] as Insulin;
+                        var newInsulin = args.NewItems[i] as InsulinItem;
                         AddInsulinDatapoint(newInsulin);
                     }
 
@@ -260,10 +270,10 @@ namespace GlukAppWpf
             }
         }
 
-        public void AddGlucoseDatapoint(Glucose glucose)
+        public void AddGlucoseDatapoint(GlucoseItem glucose)
         {
             var timestamp =
-                DateTimeAxis.ToDouble(HelperMethods.TimestampToDateTime(glucose.getTimestamp()));
+                DateTimeAxis.ToDouble(glucose.Date);
             var item = GlucoseDataPoints.FirstOrDefault(point => point.X > timestamp);
             if (item.Equals(new DataPoint()))
             {
@@ -276,10 +286,10 @@ namespace GlukAppWpf
             }
         }
 
-        public void AddInsulinDatapoint(Insulin insulin)
+        public void AddInsulinDatapoint(InsulinItem insulin)
         {
             var timestamp =
-                DateTimeAxis.ToDouble(HelperMethods.TimestampToDateTime(insulin.getTimestamp()));
+                DateTimeAxis.ToDouble(insulin.Date);
             var item = InsulinDataPoints.FirstOrDefault(point => point.X > timestamp);
             if (item.Equals(new DataPoint()))
             {
@@ -292,10 +302,5 @@ namespace GlukAppWpf
             }
         }
     }
-
-
-
-
-
-
+    
 }

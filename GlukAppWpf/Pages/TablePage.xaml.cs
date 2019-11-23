@@ -28,9 +28,9 @@ namespace GlukAppWpf.Pages
             InitializeComponent();
         }
 
-        public TablePage(ModelController modelController) : this()
+        public TablePage(ModelProvider modelController, DataSource source) : this()
         {
-            DataContext = new TableViewModel(modelController);
+            DataContext = new TableViewModel(DataGrid, modelController, source);
         }
     }
 }

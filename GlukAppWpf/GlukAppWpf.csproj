@@ -93,7 +93,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ModelController.cs" />
+    <Compile Include="DataSource.cs" />
+    <Compile Include="ModelProvider.cs" />
+    <Compile Include="Models\GlucoseItem.cs" />
+    <Compile Include="Models\InsulinItem.cs" />
+    <Compile Include="Models\ItemBase.cs" />
     <Compile Include="Pages\GraphPage.xaml.cs">
       <DependentUpon>GraphPage.xaml</DependentUpon>
     </Compile>

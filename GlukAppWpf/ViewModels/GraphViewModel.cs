@@ -14,7 +14,7 @@ namespace GlukAppWpf.ViewModels
     {
         public PlotModel Model;
 
-        private ModelController _modelController;
+        private ModelProvider _modelController;
 
         private ObservableCollection<DataPoint> _points;
         public ObservableCollection<DataPoint> Points
@@ -37,8 +37,6 @@ namespace GlukAppWpf.ViewModels
                     Model.InvalidatePlot(true);
                 });
             };
-            
-
         }
 
         public GraphViewModel(PlotModel model) : this()
@@ -46,13 +44,24 @@ namespace GlukAppWpf.ViewModels
             Model = model;
         }
 
-        public GraphViewModel(PlotModel model, ModelController modelController) : this()
+        public GraphViewModel(PlotModel model, ModelProvider modelController) : this()
         {
             Model = model;
             _modelController = modelController;
-            //Points = _modelController.GetGlucoseDataPoints();
-            //Points.Sort(point => point.X);
         }
+
+        public GraphViewModel(PlotModel model, ModelProvider modelController, DataSource dataSource) : this(model, modelController)
+        {
+            var dataSourcePropertyName = nameof(dataSource.Source);
+            dataSource.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName.Equals(dataSourcePropertyName))
+                {
+                    ChangeDataSource(dataSource.Source);
+                }
+            };
+        }
+
 
         public GraphViewModel(PlotModel model, ObservableCollection<DataPoint> points)
         {
@@ -60,9 +69,17 @@ namespace GlukAppWpf.ViewModels
             Points = points;
         }
 
-        public void Refresh()
+        private void ChangeDataSource(DataSources source)
         {
-            Points.Sort(point => point.X);
+            switch (source)
+            {
+                case DataSources.Glucoses:
+                    Points = _modelController.GlucoseDataPoints;
+                    break;
+                case DataSources.Insulins:
+                    Points = _modelController.InsulinDataPoints;
+                    break;
+            }
         }
     }
 }
