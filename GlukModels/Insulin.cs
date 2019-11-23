@@ -48,7 +48,7 @@ namespace GlukLibrary
             {
                 return item.getId() == Id
                        && item.getTimestamp() == Timestamp
-                       && item.getValue() == Value
+                       && Math.Abs(item.getValue() - Value) < 0.095
                        && item.isIsDayDosage() == _isDayDosage;
             }
 

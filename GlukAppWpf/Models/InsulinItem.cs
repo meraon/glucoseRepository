@@ -25,5 +25,25 @@ namespace GlukAppWpf.Models
             Value = value;
             IsDayDosage = isDayDosage;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is InsulinItem item)
+            {
+                return item.GetId() == _id
+                       && item.Date.Equals(Date)
+                       && Math.Abs(item.Value - Value) < 0.095
+                       && item.IsDayDosage == IsDayDosage;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = base.GetHashCode();
+            hash = (7 * hash) + IsDayDosage.GetHashCode();
+            return hash;
+        }
     }
 }

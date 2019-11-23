@@ -10,6 +10,7 @@ using GlukAppWpf.Models;
 using GlukLibrary;
 using GlukLibrary.DbQuery;
 using OxyPlot;
+using OxyPlot.Axes;
 
 namespace GlukAppWpf.Tests
 {
@@ -111,10 +112,10 @@ namespace GlukAppWpf.Tests
         public void InsulinCollectionChangedReplaceTest()
         {
             ModelProvider modelController = new ModelProvider();
-            var glucose = new InsulinItem(DateTime.Now, 9.0f, true);
+            var insulin = new InsulinItem(DateTime.Now, 9.0f, true);
 
-            modelController.Insulins[0] = glucose;
-            var point = ModelProvider.ModelToDataPoint(glucose);
+            modelController.Insulins[0] = insulin;
+            var point = ModelProvider.ModelToDataPoint(insulin);
 
             Assert.IsTrue(modelController.InsulinDataPoints.Contains(point));
 
@@ -127,6 +128,15 @@ namespace GlukAppWpf.Tests
             ModelProvider modelController = new ModelProvider();
             modelController.Insulins.Clear();
             Assert.IsTrue(modelController.InsulinDataPoints.Count == 0);
+        }
+
+        [TestMethod]
+        public void ModelToDataPointTest()
+        {
+            var dateTime = DateTime.Now;
+            var glucose = new GlucoseItem(dateTime, 9.0f);
+            var glucoseDatapoint = ModelProvider.ModelToDataPoint(glucose);
+            Assert.AreEqual(glucoseDatapoint, new DataPoint(DateTimeAxis.ToDouble(dateTime), 9.0f));
         }
 
         private static void CheckGlucosesSorted(ModelProvider modelController)
@@ -152,5 +162,7 @@ namespace GlukAppWpf.Tests
                 Assert.IsTrue(modelController.InsulinDataPoints[i].Equals(point));
             }
         }
+
+
     }
 }

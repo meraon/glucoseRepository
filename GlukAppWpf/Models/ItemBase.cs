@@ -34,5 +34,26 @@ namespace GlukAppWpf.Models
         {
             return _id;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ItemBase item)
+            {
+                return item.GetId() == _id
+                       && item.Date.Equals(Date)
+                       && Math.Abs(item.Value - Value) < 0.095;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 13;
+            hash = (7 * hash) + _id.GetHashCode();
+            hash = (7 * hash) + Date.GetHashCode();
+            hash = (7 * hash) + Value.GetHashCode();
+            return hash;
+        }
     }
 }

@@ -298,7 +298,7 @@ namespace GlukAppWpf
             else
             {
                 var index = InsulinDataPoints.IndexOf(item);
-                GlucoseDataPoints.Insert(index, ModelToDataPoint(insulin));
+                InsulinDataPoints.Insert(index, ModelToDataPoint(insulin));
             }
         }
     }
