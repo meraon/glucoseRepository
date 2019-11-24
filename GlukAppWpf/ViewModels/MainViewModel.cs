@@ -15,7 +15,8 @@ namespace GlukAppWpf.ViewModels
         public RelayCommand ImportCommand { get; private set; }
 
 
-        private Frame _mainFrame;
+        private Frame _graphFrame;
+        private Frame _tableFrame;
         private ModelProvider _modelController;
         private DataSource _dataSource;
 
@@ -25,11 +26,17 @@ namespace GlukAppWpf.ViewModels
             _dataSource = new DataSource();
         }
 
-        public MainViewModel(Frame mainFrame) : this()
+        public MainViewModel(Frame graphFrame) : this()
         {
-            _mainFrame = mainFrame;
+            _graphFrame = graphFrame;
             _modelController = new ModelProvider();
-            _mainFrame.Content = new GraphPage(_modelController, _dataSource);
+            _graphFrame.Content = new GraphPage(_modelController, _dataSource);
+        }
+
+        public MainViewModel(Frame graphFrame, Frame tableFrame) : this(graphFrame)
+        {
+            _tableFrame = tableFrame;
+            _tableFrame.Content = new TablePage(_modelController, _dataSource);
         }
 
         private void InitCommands()
@@ -43,13 +50,13 @@ namespace GlukAppWpf.ViewModels
 
         private void ShowGraph()
         {
-            _mainFrame.Content = new GraphPage(_modelController, _dataSource);
+            _graphFrame.Content = new GraphPage(_modelController, _dataSource);
             
         }
 
         private void ShowTable()
         {
-            _mainFrame.Content = new TablePage(_modelController, _dataSource);
+            _graphFrame.Content = new TablePage(_modelController, _dataSource);
             
         }
 

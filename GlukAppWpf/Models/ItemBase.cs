@@ -3,18 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
+using OxyPlot;
+using OxyPlot.Axes;
 
 namespace GlukAppWpf.Models
 {
-    public class ItemBase
+    public class ItemBase : ObservableObject
     {
+        private DataPoint _point;
+
         protected int _id;
-        public DateTime Date { get; set; }
-        public float Value { get; set; }
+        private DateTime _date;
+        public DateTime Date
+        {
+            get => _date;
+            set
+            {
+                _date = value;
+                RaisePropertyChanged(() => Date);
+            } }
+
+        private float _value;
+        public float Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                RaisePropertyChanged(() => Value);
+            }
+        }
 
         public ItemBase()
         {
             _id = -1;
+            _point = new DataPoint();
         }
 
         public ItemBase(DateTime date, float value) : this()
@@ -33,6 +57,21 @@ namespace GlukAppWpf.Models
         public int GetId()
         {
             return _id;
+        }
+
+        public DataPoint GetDataPoint()
+        {
+            return _point;
+        }
+
+        /// <summary>
+        /// Generates new datapoint based on current Date and Value
+        /// </summary>
+        /// <returns>Newly-generated point</returns>
+        public DataPoint GenerateDataPoint()
+        {
+            _point = new DataPoint(DateTimeAxis.ToDouble(Date), Value);
+            return _point;
         }
 
         public override bool Equals(object obj)
@@ -55,5 +94,7 @@ namespace GlukAppWpf.Models
             hash = (7 * hash) + Value.GetHashCode();
             return hash;
         }
+
+        
     }
 }

@@ -9,7 +9,9 @@
       Title="TablePage">
 
     <Grid Margin="10">
-        <DataGrid Name="DataGrid"/>
+        <DataGrid Name="DataGrid" CanUserAddRows="False">
+            
+        </DataGrid>
     </Grid>
 
 

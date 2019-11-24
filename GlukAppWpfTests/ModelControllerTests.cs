@@ -24,7 +24,7 @@ namespace GlukAppWpf.Tests
             ModelProvider modelController = new ModelProvider();
             GlucoseItem value = new GlucoseItem(DateTime.Now, 9.0f);
             modelController.Glucoses.Add(value);
-            DataPoint point = ModelProvider.ModelToDataPoint(value);
+            DataPoint point = value.GetDataPoint();
 
             Assert.IsTrue(modelController.GlucoseDataPoints.Contains(point));
 
@@ -59,9 +59,8 @@ namespace GlukAppWpf.Tests
             var glucose = new GlucoseItem(DateTime.Now, 9.0f);
 
             modelController.Glucoses[0] = glucose;
-            var point = ModelProvider.ModelToDataPoint(glucose);
             
-            Assert.IsTrue(modelController.GlucoseDataPoints.Contains(point));
+            Assert.IsTrue(modelController.GlucoseDataPoints.Contains(glucose.GetDataPoint()));
 
             CheckGlucosesSorted(modelController);
 
@@ -81,9 +80,8 @@ namespace GlukAppWpf.Tests
             ModelProvider modelController = new ModelProvider();
             InsulinItem value = new InsulinItem(DateTime.Now, 9.0f, true);
             modelController.Insulins.Add(value);
-            DataPoint point = ModelProvider.ModelToDataPoint(value);
 
-            Assert.IsTrue(modelController.InsulinDataPoints.Contains(point));
+            Assert.IsTrue(modelController.InsulinDataPoints.Contains(value.GetDataPoint()));
 
             CheckInsulinsSorted(modelController);
         }
@@ -115,9 +113,8 @@ namespace GlukAppWpf.Tests
             var insulin = new InsulinItem(DateTime.Now, 9.0f, true);
 
             modelController.Insulins[0] = insulin;
-            var point = ModelProvider.ModelToDataPoint(insulin);
 
-            Assert.IsTrue(modelController.InsulinDataPoints.Contains(point));
+            Assert.IsTrue(modelController.InsulinDataPoints.Contains(insulin.GetDataPoint()));
 
             CheckInsulinsSorted(modelController);
         }
@@ -130,15 +127,6 @@ namespace GlukAppWpf.Tests
             Assert.IsTrue(modelController.InsulinDataPoints.Count == 0);
         }
 
-        [TestMethod]
-        public void ModelToDataPointTest()
-        {
-            var dateTime = DateTime.Now;
-            var glucose = new GlucoseItem(dateTime, 9.0f);
-            var glucoseDatapoint = ModelProvider.ModelToDataPoint(glucose);
-            Assert.AreEqual(glucoseDatapoint, new DataPoint(DateTimeAxis.ToDouble(dateTime), 9.0f));
-        }
-
         private static void CheckGlucosesSorted(ModelProvider modelController)
         {
             var glucoses = modelController.Glucoses;
@@ -146,8 +134,7 @@ namespace GlukAppWpf.Tests
             int count = glucoses.Count;
             for (int i = 0; i < count; i++)
             {
-                var point = ModelProvider.ModelToDataPoint(glucoses[i]);
-                Assert.IsTrue(modelController.GlucoseDataPoints[i].Equals(point));
+                Assert.IsTrue(modelController.GlucoseDataPoints[i].Equals(glucoses[i].GetDataPoint()));
             }
         }
 
@@ -158,8 +145,7 @@ namespace GlukAppWpf.Tests
             int count = insulins.Count;
             for (int i = 0; i < count; i++)
             {
-                var point = ModelProvider.ModelToDataPoint(insulins[i]);
-                Assert.IsTrue(modelController.InsulinDataPoints[i].Equals(point));
+                Assert.IsTrue(modelController.InsulinDataPoints[i].Equals(insulins[i].GetDataPoint()));
             }
         }
 

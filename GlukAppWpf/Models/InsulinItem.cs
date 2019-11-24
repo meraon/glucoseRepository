@@ -10,20 +10,20 @@ namespace GlukAppWpf.Models
     {
         public bool IsDayDosage { get; set; }
 
-
-        public InsulinItem(DateTime date, float value, bool isDayDosage) : base()
+        public InsulinItem()
         {
-            Date = date;
-            Value = value;
-            IsDayDosage = isDayDosage;
         }
 
-        public InsulinItem(int id, DateTime date, float value, bool isDayDosage)
+        public InsulinItem(DateTime date, float value, bool isDayDosage) : base(date, value)
         {
-            _id = id;
-            Date = date;
-            Value = value;
             IsDayDosage = isDayDosage;
+            GenerateDataPoint();
+        }
+
+        public InsulinItem(int id, DateTime date, float value, bool isDayDosage) : base(id, date, value)
+        {
+            IsDayDosage = isDayDosage;
+            GenerateDataPoint();
         }
 
         public override bool Equals(object obj)

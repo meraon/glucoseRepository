@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Data;
@@ -17,7 +18,7 @@ using GlukAppWpf.ViewModels;
 
 namespace GlukAppWpf
 {
-    public class ModelProvider
+    public class ModelProvider : ObservableObject
     {
         private static readonly Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
@@ -41,29 +42,37 @@ namespace GlukAppWpf
             LoadData();
         }
 
+        public void AddGlucoseDatapoint(DataPoint point)
+        {
+            var item = GlucoseDataPoints.FirstOrDefault(p => p.X > point.X);
+            if (item.Equals(new DataPoint()))
+            {
+                GlucoseDataPoints.Add(point);
+            }
+            else
+            {
+                var index = GlucoseDataPoints.IndexOf(item);
+                GlucoseDataPoints.Insert(index, point);
+            }
+        }
+
+        public void AddInsulinDatapoint(DataPoint point)
+        {
+            var item = InsulinDataPoints.FirstOrDefault(p => p.X > point.X);
+            if (item.Equals(new DataPoint()))
+            {
+                InsulinDataPoints.Add(point);
+            }
+            else
+            {
+                var index = InsulinDataPoints.IndexOf(item);
+                InsulinDataPoints.Insert(index, point);
+            }
+        }
+
         private void LoadData()
         {
             LoadDataFromDb();
-        }
-
-        private void PopulateGlucoseDataPoints()
-        {
-            foreach (var glucose in Glucoses)
-            {
-                GlucoseDataPoints.Add(ModelToDataPoint(glucose));
-            };
-
-            GlucoseDataPoints.Sort(point => point.X);
-        }
-
-        private void PopulateInsulinDataPoints()
-        {
-            foreach (var insulin in Insulins)
-            {
-                InsulinDataPoints.Add(ModelToDataPoint(insulin));
-            }
-
-            InsulinDataPoints.Sort(point => point.X);
         }
 
         private void LoadDataFromDb()
@@ -83,6 +92,31 @@ namespace GlukAppWpf
 
             Glucoses.CollectionChanged += GlucoseCollectionChanged;
             Insulins.CollectionChanged += InsulinCollectionChanged;
+        }
+
+        private void PopulateGlucoseDataPoints()
+        {
+            foreach (var glucose in Glucoses)
+            {
+                GlucoseDataPoints.Add(glucose.GetDataPoint());
+            };
+
+            GlucoseDataPoints.Sort(point => point.X);
+        }
+
+        private void PopulateInsulinDataPoints()
+        {
+            foreach (var insulin in Insulins)
+            {
+                InsulinDataPoints.Add(insulin.GetDataPoint());
+            }
+
+            InsulinDataPoints.Sort(point => point.X);
+        }
+
+        public static DataPoint ModelToDataPoint(ItemBase item)
+        {
+            return new DataPoint(DateTimeAxis.ToDouble(item.Date), item.Value);
         }
 
         private ObservableCollection<InsulinItem> GetInsulinsFromDb(MySqlConnection conn)
@@ -108,6 +142,9 @@ namespace GlukAppWpf
                             value,
                             dayDosage
                         );
+
+                        insulin.PropertyChanged += InsulinOnPropertyChanged;
+
                         try
                         {
                             insulins.Add(insulin);
@@ -148,6 +185,9 @@ namespace GlukAppWpf
                         GlucoseItem glucose = new GlucoseItem(id,
                             dateTime,
                             value);
+                        glucose.GenerateDataPoint();
+                        glucose.PropertyChanged += GlucoseOnPropertyChanged;
+
                         try
                         {
                             glucoses.Add(glucose);
@@ -168,9 +208,22 @@ namespace GlukAppWpf
             }
         }
 
-        public static DataPoint ModelToDataPoint(ItemBase item)
+        private void GlucoseOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            return new DataPoint(DateTimeAxis.ToDouble(item.Date), item.Value);
+            var glucose = (GlucoseItem) sender;
+            var oldPoint = glucose.GetDataPoint();
+            GlucoseDataPoints.Remove(oldPoint);
+            AddGlucoseDatapoint(glucose.GenerateDataPoint());
+            RaisePropertyChanged(() => GlucoseDataPoints);
+        }
+
+        private void InsulinOnPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            var insulin = (InsulinItem)sender;
+            var oldPoint = insulin.GetDataPoint();
+            GlucoseDataPoints.Remove(oldPoint);
+            AddGlucoseDatapoint(insulin.GenerateDataPoint());
+            RaisePropertyChanged(() => InsulinDataPoints);
         }
 
         private void GlucoseCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -181,15 +234,14 @@ namespace GlukAppWpf
                     
                     foreach (GlucoseItem glucose in args.NewItems)
                     {
-                        AddGlucoseDatapoint(glucose);
+                        AddGlucoseDatapoint(glucose.GetDataPoint());
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
 
                     foreach (GlucoseItem glucose in args.OldItems)
                     {
-                        var point = ModelToDataPoint(glucose);
-                        GlucoseDataPoints.Remove(point);
+                        GlucoseDataPoints.Remove(glucose.GetDataPoint());
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
@@ -197,15 +249,13 @@ namespace GlukAppWpf
                     for (int i = 0; i < count; i++)
                     {
                         var glucose = args.OldItems[i] as GlucoseItem;
-                        var point = ModelToDataPoint(glucose);
-                        if (!GlucoseDataPoints.Contains(point))
+                        if (!GlucoseDataPoints.Contains(glucose.GetDataPoint()))
                         {
                             throw new ValueUnavailableException("Datapoint is missing.");
                         }
 
-                        GlucoseDataPoints.Remove(point);
-                        var newGlucose = args.NewItems[i] as GlucoseItem;
-                        AddGlucoseDatapoint(newGlucose);
+                        GlucoseDataPoints.Remove(glucose.GetDataPoint());
+                        if (args.NewItems[i] is GlucoseItem newGlucose) AddGlucoseDatapoint(newGlucose.GetDataPoint());
                     }
 
                     break;
@@ -228,7 +278,7 @@ namespace GlukAppWpf
 
                     foreach (InsulinItem insulin in args.NewItems)
                     {
-                        AddInsulinDatapoint(insulin);
+                        AddInsulinDatapoint(insulin.GetDataPoint());
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -254,8 +304,7 @@ namespace GlukAppWpf
                         }
 
                         InsulinDataPoints.Remove(point);
-                        var newInsulin = args.NewItems[i] as InsulinItem;
-                        AddInsulinDatapoint(newInsulin);
+                        if (args.NewItems[i] is InsulinItem newInsulin) AddInsulinDatapoint(newInsulin.GetDataPoint());
                     }
 
                     break;
@@ -270,37 +319,9 @@ namespace GlukAppWpf
             }
         }
 
-        public void AddGlucoseDatapoint(GlucoseItem glucose)
-        {
-            var timestamp =
-                DateTimeAxis.ToDouble(glucose.Date);
-            var item = GlucoseDataPoints.FirstOrDefault(point => point.X > timestamp);
-            if (item.Equals(new DataPoint()))
-            {
-                GlucoseDataPoints.Add(ModelToDataPoint(glucose));
-            }
-            else
-            {
-                var index = GlucoseDataPoints.IndexOf(item);
-                GlucoseDataPoints.Insert(index, ModelToDataPoint(glucose));
-            }
-        }
+        
 
-        public void AddInsulinDatapoint(InsulinItem insulin)
-        {
-            var timestamp =
-                DateTimeAxis.ToDouble(insulin.Date);
-            var item = InsulinDataPoints.FirstOrDefault(point => point.X > timestamp);
-            if (item.Equals(new DataPoint()))
-            {
-                InsulinDataPoints.Add(ModelToDataPoint(insulin));
-            }
-            else
-            {
-                var index = InsulinDataPoints.IndexOf(item);
-                InsulinDataPoints.Insert(index, ModelToDataPoint(insulin));
-            }
-        }
+
     }
     
 }

@@ -11,9 +11,12 @@ namespace GlukAppWpf.ViewModels
         private ModelProvider _modelController;
         private DataGrid _dataGrid;
 
+        public DataSource Source;
+
         public TableViewModel()
         {
             
+
         }
 
         public TableViewModel(DataGrid dataGrid, ModelProvider modelController) : this()
@@ -21,10 +24,12 @@ namespace GlukAppWpf.ViewModels
             _modelController = modelController;
             _dataGrid = dataGrid;
             dataGrid.ItemsSource = modelController.Glucoses;
+
         }
 
         public TableViewModel(DataGrid dataGrid, ModelProvider modelController, DataSource source) : this(dataGrid, modelController)
         {
+            Source = source;
             var dataSourcePropertyName = nameof(source.Source);
             source.PropertyChanged += (sender, args) =>
             {
@@ -49,7 +54,7 @@ namespace GlukAppWpf.ViewModels
                     throw new ArgumentOutOfRangeException(nameof(source), source, null);
             }
 
-            _dataGrid.Items.Refresh();
+            //_dataGrid.Items.Refresh();
         }
     }
 }

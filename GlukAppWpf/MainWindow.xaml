@@ -6,12 +6,16 @@
         xmlns:local="clr-namespace:GlukAppWpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid RenderTransformOrigin="0.639,0.477">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
         <Menu Grid.Column="0" Grid.Row="0" Height="Auto">
             <MenuItem Header="_File">
@@ -26,6 +30,7 @@
                 <MenuItem Header="_Table" Command="{Binding TableCommand}"/>
             </MenuItem>
         </Menu>
-        <Frame x:Name="MainFrame" Grid.Row="1" Grid.Column="0" NavigationUIVisibility="Hidden" Margin="10"/>
+        <Frame x:Name="GraphFrame" Grid.Row="1" Grid.Column="0" NavigationUIVisibility="Hidden" Margin="10"/>
+        <Frame x:Name="TableFrame" Grid.Row="1" Grid.Column="1" NavigationUIVisibility="Hidden" Margin="10"/>
     </Grid>
 </Window>

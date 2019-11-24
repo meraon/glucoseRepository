@@ -5,6 +5,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 
@@ -32,10 +33,7 @@ namespace GlukAppWpf.ViewModels
             Points = new ObservableCollection<DataPoint>();
             Points.CollectionChanged += (sender, args) =>
             {
-                Application.Current.Dispatcher?.Invoke(() =>
-                {
-                    Model.InvalidatePlot(true);
-                });
+                
             };
         }
 
@@ -48,6 +46,18 @@ namespace GlukAppWpf.ViewModels
         {
             Model = model;
             _modelController = modelController;
+            _modelController.GlucoseDataPoints.CollectionChanged += DataPointsOnCollectionChanged;
+            _modelController.InsulinDataPoints.CollectionChanged += DataPointsOnCollectionChanged;
+
+        }
+
+        private void DataPointsOnCollectionChanged(object o, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            Application.Current.Dispatcher?.Invoke(() =>
+            {
+                Model.InvalidatePlot(true);
+                Model.ResetAllAxes();
+            });
         }
 
         public GraphViewModel(PlotModel model, ModelProvider modelController, DataSource dataSource) : this(model, modelController)
