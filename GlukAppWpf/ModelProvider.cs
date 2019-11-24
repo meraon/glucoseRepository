@@ -221,8 +221,8 @@ namespace GlukAppWpf
         {
             var insulin = (InsulinItem)sender;
             var oldPoint = insulin.GetDataPoint();
-            GlucoseDataPoints.Remove(oldPoint);
-            AddGlucoseDatapoint(insulin.GenerateDataPoint());
+            InsulinDataPoints.Remove(oldPoint);
+            AddInsulinDatapoint(insulin.GenerateDataPoint());
             RaisePropertyChanged(() => InsulinDataPoints);
         }
 

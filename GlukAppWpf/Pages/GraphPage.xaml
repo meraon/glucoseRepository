@@ -24,7 +24,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <oxy:Plot x:Name="Plot" Grid.Row="0" Grid.ColumnSpan="4" Margin="10">
+        <oxy:Plot x:Name="Plot" Grid.Row="0" Grid.ColumnSpan="4" Margin="10,10,0,0">
             <oxy:Plot.Axes>
                 <oxy:DateTimeAxis Title="Date Time" Position="Bottom" ></oxy:DateTimeAxis>
                 <oxy:LinearAxis Title="Y" Position="Left"></oxy:LinearAxis>

@@ -51,15 +51,6 @@ namespace GlukAppWpf.ViewModels
 
         }
 
-        private void DataPointsOnCollectionChanged(object o, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            Application.Current.Dispatcher?.Invoke(() =>
-            {
-                Model.InvalidatePlot(true);
-                Model.ResetAllAxes();
-            });
-        }
-
         public GraphViewModel(PlotModel model, ModelProvider modelController, DataSource dataSource) : this(model, modelController)
         {
             var dataSourcePropertyName = nameof(dataSource.Source);
@@ -70,8 +61,18 @@ namespace GlukAppWpf.ViewModels
                     ChangeDataSource(dataSource.Source);
                 }
             };
+
+            ChangeDataSource(dataSource.Source);
         }
 
+        private void DataPointsOnCollectionChanged(object o, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            Application.Current.Dispatcher?.Invoke(() =>
+            {
+                Model.InvalidatePlot(true);
+                Model.ResetAllAxes();
+            });
+        }
 
         public GraphViewModel(PlotModel model, ObservableCollection<DataPoint> points)
         {

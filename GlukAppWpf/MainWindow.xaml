@@ -11,13 +11,16 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Menu Grid.Column="0" Grid.Row="0" Height="Auto">
+        <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" Height="Auto">
             <MenuItem Header="_File">
                 <MenuItem Header="_Save" Command="Save"></MenuItem>
                 <MenuItem Header="_Export" Command="{Binding ExportCommand}"></MenuItem>
@@ -30,7 +33,10 @@
                 <MenuItem Header="_Table" Command="{Binding TableCommand}"/>
             </MenuItem>
         </Menu>
-        <Frame x:Name="GraphFrame" Grid.Row="1" Grid.Column="0" NavigationUIVisibility="Hidden" Margin="10"/>
-        <Frame x:Name="TableFrame" Grid.Row="1" Grid.Column="1" NavigationUIVisibility="Hidden" Margin="10"/>
+        <Frame x:Name="GraphFrame" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" NavigationUIVisibility="Hidden" Margin="10"/>
+        <Frame x:Name="TableFrame" Grid.Row="1" Grid.Column="4" NavigationUIVisibility="Hidden" Margin="10"/>
+        <Button Grid.Column="0" Grid.Row="3" Width="80" Height="30" Margin="20,5,10,10" x:Name="GlucosesSourceButton" Content="Glucoses" Command="{Binding GlucosesSourceCommand}"/>
+        <Button Grid.Column="1" Grid.Row="3" Width="80" Height="30" Margin="10,5,10,10" x:Name="InsulinsSourceButton" Content="Insulins" Command="{Binding InsulinsSourceCommand}"/>
+        
     </Grid>
 </Window>

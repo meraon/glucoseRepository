@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GlukAppWpf.Pages;
 using System.Windows;
@@ -13,6 +14,8 @@ namespace GlukAppWpf.ViewModels
         public RelayCommand ExitCommand { get; private set; }
         public RelayCommand ExportCommand { get; private set; }
         public RelayCommand ImportCommand { get; private set; }
+        public RelayCommand GlucosesSourceCommand { get; private set; }
+        public RelayCommand InsulinsSourceCommand { get; private set; }
 
 
         private Frame _graphFrame;
@@ -46,6 +49,8 @@ namespace GlukAppWpf.ViewModels
             ExitCommand = new RelayCommand(Exit);
             ExportCommand = new RelayCommand(Export);
             ImportCommand = new RelayCommand(Import);
+            GlucosesSourceCommand = new RelayCommand(SetSourceGlucoses);
+            InsulinsSourceCommand = new RelayCommand(SetSourceInsulins);
         }
 
         private void ShowGraph()
@@ -60,14 +65,24 @@ namespace GlukAppWpf.ViewModels
             
         }
 
-        private void Export()
+        private void SetSourceGlucoses()
         {
             _dataSource.Source = DataSources.Glucoses;
         }
 
-        private void Import()
+        private void SetSourceInsulins()
         {
             _dataSource.Source = DataSources.Insulins;
+        }
+
+        private void Export()
+        {
+            
+        }
+
+        private void Import()
+        {
+            
         }
 
         private void Exit()
