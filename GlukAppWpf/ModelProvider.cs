@@ -15,6 +15,7 @@ using System.Windows.Data;
 using GalaSoft.MvvmLight;
 using GlukAppWpf.Models;
 using GlukAppWpf.ViewModels;
+using OxyPlot.Series;
 
 namespace GlukAppWpf
 {
@@ -30,9 +31,14 @@ namespace GlukAppWpf
         public ObservableCollection<DataPoint> GlucoseDataPoints { get; private set; }
         public ObservableCollection<DataPoint> InsulinDataPoints { get; private set; }
 
+        public ObservableCollection<ScatterPoint> GlucoseHighlights { get; private set; }
+        public ObservableCollection<ScatterPoint> InsulinHighlights { get; private set; }
+
         public ModelProvider()
         {
             _connectionString = Connection.GetConnectionString(Directory.GetCurrentDirectory());
+            GlucoseHighlights = new ObservableCollection<ScatterPoint>();
+            InsulinHighlights = new ObservableCollection<ScatterPoint>();
             LoadData();
         }
 

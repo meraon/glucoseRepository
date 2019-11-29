@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using OxyPlot.Series;
 
 namespace GlukAppWpf.ViewModels
 {
@@ -28,13 +29,20 @@ namespace GlukAppWpf.ViewModels
             }
         }
 
+        private ObservableCollection<ScatterPoint> _highlights;
+        public ObservableCollection<ScatterPoint> Highlights
+        {
+            get => _highlights;
+            set
+            {
+                _highlights = value;
+                RaisePropertyChanged(() => Highlights);
+            }
+        }
+
         public GraphViewModel()
         {
             Points = new ObservableCollection<DataPoint>();
-            Points.CollectionChanged += (sender, args) =>
-            {
-                
-            };
         }
 
         public GraphViewModel(PlotModel model) : this()
@@ -86,9 +94,11 @@ namespace GlukAppWpf.ViewModels
             {
                 case DataSources.Glucoses:
                     Points = _modelController.GlucoseDataPoints;
+                    Highlights = _modelController.GlucoseHighlights;
                     break;
                 case DataSources.Insulins:
                     Points = _modelController.InsulinDataPoints;
+                    Highlights = _modelController.InsulinHighlights;
                     break;
             }
         }

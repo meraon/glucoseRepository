@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using OxyPlot;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Controls;
+using GlukAppWpf.Models;
+using OxyPlot.Series;
 
 namespace GlukAppWpf.ViewModels
 {
@@ -13,16 +17,28 @@ namespace GlukAppWpf.ViewModels
 
         public DataSource Source;
 
-        public TableViewModel()
+        public TableViewModel(DataGrid dataGrid)
         {
-            
+            _dataGrid = dataGrid;
+            _dataGrid.SelectionChanged += (sender, args) =>
+            {
+                var highlights = GetCurrentHighlightCollection();
+                foreach (var addedItem in args.AddedItems)
+                {
+                    highlights.Add(((ItemBase)addedItem).GetScatterPoint());
+                }
+                foreach (var removedItem in args.RemovedItems)
+                {
+                    var point = ((ItemBase) removedItem).GetScatterPoint();
 
+                    highlights.Remove(point);
+                }
+            };
         }
 
-        public TableViewModel(DataGrid dataGrid, ModelProvider modelController) : this()
+        public TableViewModel(DataGrid dataGrid, ModelProvider modelController) : this(dataGrid)
         {
             _modelController = modelController;
-            _dataGrid = dataGrid;
             dataGrid.ItemsSource = modelController.Glucoses;
 
         }
@@ -55,6 +71,18 @@ namespace GlukAppWpf.ViewModels
             }
 
             //_dataGrid.Items.Refresh();
+        }
+
+        private ObservableCollection<ScatterPoint> GetCurrentHighlightCollection()
+        {
+            switch (Source.Source)
+            {
+                case DataSources.Glucoses:
+                    return _modelController.GlucoseHighlights;
+                case DataSources.Insulins:
+                    return _modelController.InsulinHighlights;
+                default: return null;
+            }
         }
     }
 }

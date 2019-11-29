@@ -29,14 +29,11 @@
                 <MenuItem Header="_Exit" Command="{Binding ExitCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="_Graph" Command="{Binding GraphCommand}"/>
-                <MenuItem Header="_Table" Command="{Binding TableCommand}"/>
+                <MenuItem Header="_Glucoses" Command="{Binding GlucosesSourceCommand}"/>
+                <MenuItem Header="_Insulins" Command="{Binding InsulinsSourceCommand}"/>
             </MenuItem>
         </Menu>
         <Frame x:Name="GraphFrame" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" NavigationUIVisibility="Hidden" Margin="10"/>
         <Frame x:Name="TableFrame" Grid.Row="1" Grid.Column="4" NavigationUIVisibility="Hidden" Margin="10"/>
-        <Button Grid.Column="0" Grid.Row="3" Width="80" Height="30" Margin="20,5,10,10" x:Name="GlucosesSourceButton" Content="Glucoses" Command="{Binding GlucosesSourceCommand}"/>
-        <Button Grid.Column="1" Grid.Row="3" Width="80" Height="30" Margin="10,5,10,10" x:Name="InsulinsSourceButton" Content="Insulins" Command="{Binding InsulinsSourceCommand}"/>
-        
     </Grid>
 </Window>

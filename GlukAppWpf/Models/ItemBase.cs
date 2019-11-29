@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using OxyPlot;
 using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace GlukAppWpf.Models
 {
     public class ItemBase : ObservableObject
     {
         private DataPoint _point;
+        private ScatterPoint _highlightPoint;
 
         protected int _id;
         private DateTime _date;
@@ -64,6 +66,11 @@ namespace GlukAppWpf.Models
             return _point;
         }
 
+        public ScatterPoint GetScatterPoint()
+        {
+            return _highlightPoint;
+        }
+
         /// <summary>
         /// Generates new datapoint based on current Date and Value
         /// </summary>
@@ -71,6 +78,7 @@ namespace GlukAppWpf.Models
         public DataPoint GenerateDataPoint()
         {
             _point = new DataPoint(DateTimeAxis.ToDouble(Date), Value);
+            _highlightPoint = new ScatterPoint(_point.X, _point.Y);
             return _point;
         }
 

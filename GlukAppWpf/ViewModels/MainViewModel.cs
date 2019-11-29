@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Linq;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GlukAppWpf.Pages;
 using System.Windows;
 using System.Windows.Controls;
+using GlukAppWpf.Models;
+using NLog;
 
 namespace GlukAppWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        private Logger LOG = LogManager.GetCurrentClassLogger();
+
         public RelayCommand GraphCommand { get; private set; }
         public RelayCommand TableCommand { get; private set; }
         public RelayCommand ExitCommand { get; private set; }
@@ -51,6 +56,27 @@ namespace GlukAppWpf.ViewModels
             ImportCommand = new RelayCommand(Import);
             GlucosesSourceCommand = new RelayCommand(SetSourceGlucoses);
             InsulinsSourceCommand = new RelayCommand(SetSourceInsulins);
+        }
+
+        private void HighlightPoint(ItemBase item)
+        {
+            var point = _modelController.GlucoseDataPoints.FirstOrDefault(x => x.Equals(item.GenerateDataPoint()));
+            if (!point.IsDefined())
+            {
+                LOG.Warn("Point is missing!");
+                return;
+            }
+
+            var model = ((GraphPage) _graphFrame.Content)?.Plot.ActualModel;
+            if (model == null)
+            {
+                LOG.Warn("Unable to get plot model");
+                return;
+            }
+
+
+
+            
         }
 
         private void ShowGraph()

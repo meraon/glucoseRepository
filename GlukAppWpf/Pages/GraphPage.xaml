@@ -30,7 +30,8 @@
                 <oxy:LinearAxis Title="Y" Position="Left"></oxy:LinearAxis>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding Points}" />
+                <oxy:LineSeries  ItemsSource="{Binding Points}" Color="DodgerBlue"/>
+                <oxy:ScatterSeries  ItemsSource="{Binding Highlights}" MarkerType="Circle" MarkerFill="Gold" MarkerSize="4"/>
             </oxy:Plot.Series>
         </oxy:Plot>
     </Grid>
