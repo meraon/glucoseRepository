@@ -17,13 +17,13 @@ namespace GlukAppWpf.Models
         public InsulinItem(DateTime date, float value, bool isDayDosage) : base(date, value)
         {
             IsDayDosage = isDayDosage;
-            GenerateDataPoint();
+            InitializePoints();
         }
 
         public InsulinItem(int id, DateTime date, float value, bool isDayDosage) : base(id, date, value)
         {
             IsDayDosage = isDayDosage;
-            GenerateDataPoint();
+            InitializePoints();
         }
 
         public override bool Equals(object obj)

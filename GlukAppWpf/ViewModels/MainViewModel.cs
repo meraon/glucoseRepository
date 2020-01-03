@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -6,6 +7,7 @@ using GlukAppWpf.Pages;
 using System.Windows;
 using System.Windows.Controls;
 using GlukAppWpf.Models;
+using Microsoft.Win32;
 using NLog;
 
 namespace GlukAppWpf.ViewModels
@@ -60,7 +62,7 @@ namespace GlukAppWpf.ViewModels
 
         private void HighlightPoint(ItemBase item)
         {
-            var point = _modelController.GlucoseDataPoints.FirstOrDefault(x => x.Equals(item.GenerateDataPoint()));
+            var point = _modelController.GlucoseDataPoints.FirstOrDefault(x => x.Equals(item.GetDataPoint()));
             if (!point.IsDefined())
             {
                 LOG.Warn("Point is missing!");
@@ -93,22 +95,46 @@ namespace GlukAppWpf.ViewModels
 
         private void SetSourceGlucoses()
         {
-            _dataSource.Source = DataSources.Glucoses;
+            _dataSource.Current = DataSources.Glucoses;
         }
 
         private void SetSourceInsulins()
         {
-            _dataSource.Source = DataSources.Insulins;
+            _dataSource.Current = DataSources.Insulins;
         }
 
         private void Export()
         {
-            
+            try
+            {
+                var workbook = Serializer.Export(_modelController.Glucoses, _modelController.Insulins);
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog { Filter = "Excel 2007 file (*.xlsx)|*.xlsx" };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    workbook.SaveAs(saveFileDialog.FileName);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Import()
         {
-            
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "Excel 2007 file (*.xlsx)|*.xlsx" };
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    Serializer.Import(openFileDialog.FileName, _modelController.Glucoses, _modelController.Insulins);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Exit()

@@ -14,12 +14,12 @@ namespace GlukAppWpf.Models
 
         public GlucoseItem(DateTime date, float value) : base(date, value)
         {
-            GenerateDataPoint();
+            InitializePoints();
         }
 
         public GlucoseItem(int id, DateTime date, float value) : base(id, date, value)
         {
-            GenerateDataPoint();
+            InitializePoints();
         }
     }
 }

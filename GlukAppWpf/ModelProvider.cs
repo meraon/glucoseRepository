@@ -60,11 +60,39 @@ namespace GlukAppWpf
                 var index = GlucoseDataPoints.IndexOf(item);
                 GlucoseDataPoints.Insert(index, point);
             }
+
+        }
+
+        public void AddScatterPoint(ScatterPoint point, DataSources source)
+        {
+            switch (source)
+            {
+                case DataSources.Glucoses:
+                    GlucoseHighlights.Add(point);
+                    break;
+                case DataSources.Insulins:
+                    InsulinHighlights.Add(point);
+                    break;
+            }
+        }
+
+        public void RemoveScatterPoint(ScatterPoint point, DataSources source)
+        {
+            switch (source)
+            {
+                case DataSources.Glucoses:
+                    GlucoseHighlights.Remove(point);
+                    break;
+                case DataSources.Insulins:
+                    InsulinHighlights.Remove(point);
+                    break;
+            }
         }
 
         public void AddInsulinDatapoint(DataPoint point)
         {
             var item = InsulinDataPoints.FirstOrDefault(p => p.X > point.X);
+            
             if (item.Equals(new DataPoint()))
             {
                 InsulinDataPoints.Add(point);
@@ -150,7 +178,7 @@ namespace GlukAppWpf
                         );
 
                         insulin.PropertyChanged += InsulinOnPropertyChanged;
-
+                        insulin.OnPropertyChanging += InsulinOnPropertyChanging;
                         try
                         {
                             insulins.Add(insulin);
@@ -191,7 +219,8 @@ namespace GlukAppWpf
                         GlucoseItem glucose = new GlucoseItem(id,
                             dateTime,
                             value);
-                        glucose.GenerateDataPoint();
+                        glucose.InitializePoints();
+                        glucose.OnPropertyChanging += GlucoseOnPropertyChanging;
                         glucose.PropertyChanged += GlucoseOnPropertyChanged;
 
                         try
@@ -214,22 +243,51 @@ namespace GlukAppWpf
             }
         }
 
+        private void GlucoseOnPropertyChanging(object sender, OnPropertyChangingEventArgs args)
+        {
+            switch (args.propertyName)
+            {
+                case "Point":
+                    var oldPoint = (DataPoint)args.OldValue;
+                    GlucoseDataPoints.Remove(oldPoint);
+                    break;
+                case "HighlightPoint":
+                    var oldScatter = (ScatterPoint) args.OldValue;
+                    GlucoseHighlights.Remove(oldScatter);
+                    break;
+            }
+
+            RaisePropertyChanged(() => GlucoseHighlights);
+        }
+
         private void GlucoseOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            var glucose = (GlucoseItem) sender;
-            var oldPoint = glucose.GetDataPoint();
-            GlucoseDataPoints.Remove(oldPoint);
-            AddGlucoseDatapoint(glucose.GenerateDataPoint());
-            RaisePropertyChanged(() => GlucoseDataPoints);
+            var glucose = (GlucoseItem)sender;
+            AddGlucoseDatapoint(glucose.GetDataPoint());
+        }
+
+        private void InsulinOnPropertyChanging(object sender, OnPropertyChangingEventArgs args)
+        {
+            switch (args.propertyName)
+            {
+                case "Point":
+                    var oldPoint = (DataPoint)args.OldValue;
+                    InsulinDataPoints.Remove(oldPoint);
+                    break;
+                case "HighlightPoint":
+                    var oldScatter = (ScatterPoint)args.OldValue;
+                    InsulinHighlights.Remove(oldScatter);
+                    break;
+            }
+
+            RaisePropertyChanged(() => GlucoseHighlights);
         }
 
         private void InsulinOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             var insulin = (InsulinItem)sender;
-            var oldPoint = insulin.GetDataPoint();
-            InsulinDataPoints.Remove(oldPoint);
-            AddInsulinDatapoint(insulin.GenerateDataPoint());
-            RaisePropertyChanged(() => InsulinDataPoints);
+            AddInsulinDatapoint(insulin.GetDataPoint());
+
         }
 
         private void GlucoseCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -325,9 +383,9 @@ namespace GlukAppWpf
             }
         }
 
-        
+
 
 
     }
-    
+
 }

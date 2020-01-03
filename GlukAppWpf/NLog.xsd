@@ -8,7 +8,7 @@
       <xs:element name="variable" type="NLogVariable" />
       <xs:element name="targets" type="NLogTargets" />
       <xs:element name="rules" type="NLogRules" />
-      <xs:element name="time" type="TimeSource" />
+      <xs:element name="time" type="TimeCurrent" />
     </xs:choice>
     <xs:attribute name="autoReload" type="xs:boolean">
       <xs:annotation>
@@ -271,7 +271,7 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="Filter" abstract="true"></xs:complexType>
-  <xs:complexType name="TimeSource" abstract="true"></xs:complexType>
+  <xs:complexType name="TimeCurrent" abstract="true"></xs:complexType>
   <xs:simpleType name="SimpleLayoutAttribute">
     <xs:restriction base="xs:string">
       <xs:pattern value=".*" />
@@ -454,7 +454,7 @@
           <xs:element name="keepAliveTimeSeconds" minOccurs="0" maxOccurs="1" type="xs:integer" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
           <xs:element name="ndlcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="includeSourceInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeCurrentInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="loggerName" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="includeNLogData" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
@@ -547,9 +547,9 @@
             <xs:documentation>NDLC item separator.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="includeSourceInfo" type="xs:boolean">
+        <xs:attribute name="includeCurrentInfo" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include source info (file name and line number) in the information sent over the network.</xs:documentation>
+            <xs:documentation>Indicates whether to include current info (file name and line number) in the information sent over the network.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
@@ -1157,7 +1157,7 @@
           <xs:element name="machineName" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="maxKilobytes" minOccurs="0" maxOccurs="1" type="xs:long" />
           <xs:element name="maxMessageLength" minOccurs="0" maxOccurs="1" type="xs:integer" />
-          <xs:element name="source" minOccurs="0" maxOccurs="1" type="Layout" />
+          <xs:element name="current" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="onOverflow" minOccurs="0" maxOccurs="1" type="NLog.Targets.EventLogTargetOverflowAction" />
           <xs:element name="optimizeBufferReuse" minOccurs="0" maxOccurs="1" type="xs:boolean" />
         </xs:choice>
@@ -1206,9 +1206,9 @@
             <xs:documentation>Message length limit to write to the Event Log.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="source" type="SimpleLayoutAttribute">
+        <xs:attribute name="current" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Value to be used as the event Source.</xs:documentation>
+            <xs:documentation>Value to be used as the event Current.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onOverflow" type="NLog.Targets.EventLogTargetOverflowAction">
@@ -2154,7 +2154,7 @@
           <xs:element name="keepAliveTimeSeconds" minOccurs="0" maxOccurs="1" type="xs:integer" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
           <xs:element name="ndlcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="includeSourceInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeCurrentInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="loggerName" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="includeNLogData" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
@@ -2247,9 +2247,9 @@
             <xs:documentation>NDLC item separator.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="includeSourceInfo" type="xs:boolean">
+        <xs:attribute name="includeCurrentInfo" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include source info (file name and line number) in the information sent over the network.</xs:documentation>
+            <xs:documentation>Indicates whether to include current info (file name and line number) in the information sent over the network.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
@@ -2729,7 +2729,7 @@
         </xs:attribute>
         <xs:attribute name="escapeDataRfc3986" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Value whether escaping be done according to Rfc3986 (Supports Internationalized Resource Identifiers - IRIs)</xs:documentation>
+            <xs:documentation>Value whether escaping be done according to Rfc3986 (Supports Internationalized Recurrent Identifiers - IRIs)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="preAuthenticate" type="xs:boolean">
@@ -3009,7 +3009,7 @@
           <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="includeSourceInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeCurrentInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
         </xs:choice>
         <xs:attribute name="includeAllProperties" type="xs:boolean">
@@ -3042,9 +3042,9 @@
             <xs:documentation>Indicates whether to include contents of the  stack.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="includeSourceInfo" type="xs:boolean">
+        <xs:attribute name="includeCurrentInfo" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include source info (file name and line number) in the information sent over the network.</xs:documentation>
+            <xs:documentation>Indicates whether to include current info (file name and line number) in the information sent over the network.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -3509,28 +3509,28 @@
   </xs:complexType>
   <xs:complexType name="AccurateLocal">
     <xs:complexContent>
-      <xs:extension base="TimeSource">
+      <xs:extension base="TimeCurrent">
         <xs:choice minOccurs="0" maxOccurs="unbounded" />
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="AccurateUTC">
     <xs:complexContent>
-      <xs:extension base="TimeSource">
+      <xs:extension base="TimeCurrent">
         <xs:choice minOccurs="0" maxOccurs="unbounded" />
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="FastLocal">
     <xs:complexContent>
-      <xs:extension base="TimeSource">
+      <xs:extension base="TimeCurrent">
         <xs:choice minOccurs="0" maxOccurs="unbounded" />
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="FastUTC">
     <xs:complexContent>
-      <xs:extension base="TimeSource">
+      <xs:extension base="TimeCurrent">
         <xs:choice minOccurs="0" maxOccurs="unbounded" />
       </xs:extension>
     </xs:complexContent>

@@ -9,25 +9,25 @@ namespace GlukAppWpf
 {
     public class DataSource : ObservableObject
     {
-        private DataSources _source;
-        public DataSources Source
+        private DataSources _current;
+        public DataSources Current
         {
-            get => _source;
+            get => _current;
             set
             {
-                _source = value;
-                RaisePropertyChanged(() => Source);
+                _current = value;
+                RaisePropertyChanged(() => Current);
             }
         }
 
         public DataSource()
         {
-            Source = DataSources.Glucoses;
+            Current = DataSources.Glucoses;
         }
 
-        public DataSource(DataSources source)
+        public DataSource(DataSources current)
         {
-            Source = source;
+            Current = current;
         }
     }
 

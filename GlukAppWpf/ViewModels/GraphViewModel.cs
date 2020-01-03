@@ -1,22 +1,25 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using GlukLibrary;
 using OxyPlot;
-using OxyPlot.Axes;
-using System;
+using OxyPlot.Series;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
-using OxyPlot.Series;
+
+
+//TODO reset graph when changing views
 
 namespace GlukAppWpf.ViewModels
 {
     public class GraphViewModel : ViewModelBase
     {
-        public PlotModel Model;
+        private readonly double _maxValue = 10.0;
+        private readonly double _minValue = 5.0;
 
         private ModelProvider _modelController;
+
+
+        public PlotModel Model;
 
         private ObservableCollection<DataPoint> _points;
         public ObservableCollection<DataPoint> Points
@@ -40,14 +43,46 @@ namespace GlukAppWpf.ViewModels
             }
         }
 
+        private ObservableCollection<DataPoint> _minLine;
+        public ObservableCollection<DataPoint> MinLine
+        {
+            get => _minLine;
+            set
+            {
+                _minLine = value;
+                RaisePropertyChanged(() => MinLine);
+            }
+        }
+
+        private ObservableCollection<DataPoint> _maxLine;
+        public ObservableCollection<DataPoint> MaxLine
+        {
+            get => _maxLine;
+            set
+            {
+                _maxLine = value;
+                RaisePropertyChanged(() => MaxLine);
+            }
+        }
+
         public GraphViewModel()
         {
             Points = new ObservableCollection<DataPoint>();
+            MinLine = new ObservableCollection<DataPoint>();
+            MaxLine = new ObservableCollection<DataPoint>();
         }
 
         public GraphViewModel(PlotModel model) : this()
         {
             Model = model;
+        }
+
+        public GraphViewModel(PlotModel model, ObservableCollection<DataPoint> points) : this()
+        {
+            Model = model;
+            Points = points;
+            UpdateLine(MinLine, _minValue);
+            UpdateLine(MaxLine, _maxValue);
         }
 
         public GraphViewModel(PlotModel model, ModelProvider modelController) : this()
@@ -56,25 +91,30 @@ namespace GlukAppWpf.ViewModels
             _modelController = modelController;
             _modelController.GlucoseDataPoints.CollectionChanged += DataPointsOnCollectionChanged;
             _modelController.InsulinDataPoints.CollectionChanged += DataPointsOnCollectionChanged;
+            
 
         }
 
         public GraphViewModel(PlotModel model, ModelProvider modelController, DataSource dataSource) : this(model, modelController)
         {
-            var dataSourcePropertyName = nameof(dataSource.Source);
+            var dataSourcePropertyName = nameof(dataSource.Current);
             dataSource.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName.Equals(dataSourcePropertyName))
                 {
-                    ChangeDataSource(dataSource.Source);
+                    ChangeDataSource(dataSource.Current);
                 }
             };
 
-            ChangeDataSource(dataSource.Source);
+            ChangeDataSource(dataSource.Current);
+            UpdateLine(MinLine, _minValue);
+            UpdateLine(MaxLine, _maxValue);
         }
 
-        private void DataPointsOnCollectionChanged(object o, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void DataPointsOnCollectionChanged(object o, NotifyCollectionChangedEventArgs args)
         {
+            UpdateLine(MinLine, _minValue);
+            UpdateLine(MaxLine, _maxValue);
             Application.Current.Dispatcher?.Invoke(() =>
             {
                 Model.InvalidatePlot(true);
@@ -82,12 +122,23 @@ namespace GlukAppWpf.ViewModels
             });
         }
 
-        public GraphViewModel(PlotModel model, ObservableCollection<DataPoint> points)
+        private void UpdateLine(ObservableCollection<DataPoint> collection, double value)
         {
-            Model = model;
-            Points = points;
+            collection.Clear();
+
+            var min = 0.0;
+            var max = 0.0;
+            if (Points.Count > 0)
+            {
+                min = Points.Min(point => point.X);
+                max = Points.Max(point => point.X);
+            }
+            
+            collection.Add(new DataPoint(min, value));
+            collection.Add(new DataPoint(max, value));
         }
 
+        
         private void ChangeDataSource(DataSources source)
         {
             switch (source)

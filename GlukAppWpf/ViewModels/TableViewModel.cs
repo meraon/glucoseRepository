@@ -13,6 +13,7 @@ namespace GlukAppWpf.ViewModels
     public class TableViewModel : ViewModelBase
     {
         private ModelProvider _modelController;
+
         private DataGrid _dataGrid;
 
         public DataSource Source;
@@ -22,17 +23,21 @@ namespace GlukAppWpf.ViewModels
             _dataGrid = dataGrid;
             _dataGrid.SelectionChanged += (sender, args) =>
             {
-                var highlights = GetCurrentHighlightCollection();
                 foreach (var addedItem in args.AddedItems)
                 {
-                    highlights.Add(((ItemBase)addedItem).GetScatterPoint());
+                    var addedPoint = ((ItemBase)addedItem).GetScatterPoint();
+                    _modelController.AddScatterPoint(addedPoint, Source.Current);
                 }
                 foreach (var removedItem in args.RemovedItems)
                 {
-                    var point = ((ItemBase) removedItem).GetScatterPoint();
-
-                    highlights.Remove(point);
+                    var point = ((ItemBase)removedItem).GetScatterPoint();
+                    _modelController.RemoveScatterPoint(point, Source.Current);
                 }
+            };
+
+            _dataGrid.TargetUpdated += (sender, args) =>
+            {
+               // args.
             };
         }
 
@@ -46,12 +51,12 @@ namespace GlukAppWpf.ViewModels
         public TableViewModel(DataGrid dataGrid, ModelProvider modelController, DataSource source) : this(dataGrid, modelController)
         {
             Source = source;
-            var dataSourcePropertyName = nameof(source.Source);
+            var dataSourcePropertyName = nameof(source.Current);
             source.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName.Equals(dataSourcePropertyName))
                 {
-                    SetItemsSource(source.Source);  
+                    SetItemsSource(source.Current);  
                 }
             };
         }
@@ -75,7 +80,7 @@ namespace GlukAppWpf.ViewModels
 
         private ObservableCollection<ScatterPoint> GetCurrentHighlightCollection()
         {
-            switch (Source.Source)
+            switch (Source.Current)
             {
                 case DataSources.Glucoses:
                     return _modelController.GlucoseHighlights;

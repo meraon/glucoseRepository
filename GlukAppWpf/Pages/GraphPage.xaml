@@ -27,11 +27,13 @@
         <oxy:Plot x:Name="Plot" Grid.Row="0" Grid.ColumnSpan="4" Margin="10,10,0,0">
             <oxy:Plot.Axes>
                 <oxy:DateTimeAxis Title="Date Time" Position="Bottom" ></oxy:DateTimeAxis>
-                <oxy:LinearAxis Title="Y" Position="Left"></oxy:LinearAxis>
+                <oxy:LinearAxis Title="Y" Position="Left" Minimum="0"></oxy:LinearAxis>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LineSeries  ItemsSource="{Binding Points}" Color="DodgerBlue"/>
+                <oxy:LineSeries  ItemsSource="{Binding Points}" Color="DodgerBlue" MarkerSize="5" MarkerType="Circle" MarkerFill="OrangeRed"/>
                 <oxy:ScatterSeries  ItemsSource="{Binding Highlights}" MarkerType="Circle" MarkerFill="Gold" MarkerSize="4"/>
+                <oxy:LineSeries  ItemsSource="{Binding MinLine}" Color="MediumSpringGreen"/>
+                <oxy:LineSeries  ItemsSource="{Binding MaxLine}" Color="DarkRed"/>
             </oxy:Plot.Series>
         </oxy:Plot>
     </Grid>

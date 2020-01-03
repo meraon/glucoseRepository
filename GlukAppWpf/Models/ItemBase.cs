@@ -1,21 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using GlukAppWpf.Models;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
+public delegate void PropertyChanging(object sender, OnPropertyChangingEventArgs args);
+
 namespace GlukAppWpf.Models
 {
+
     public class ItemBase : ObservableObject
     {
+        private PropertyChanging PropertyChanging;
+        public event PropertyChanging OnPropertyChanging;
+
+
         private DataPoint _point;
+        private DataPoint Point
+        {
+            get => _point;
+            set
+            {
+                RaisePropertyChanging(this, new OnPropertyChangingEventArgs()
+                {
+                    propertyName = nameof(Point),
+                    OldValue = _point,
+                    Value = value
+                });
+                _point = value;
+                //RaisePropertyChanged(() => Point);
+            }
+        }
+
         private ScatterPoint _highlightPoint;
+        private ScatterPoint HighlightPoint
+        {
+            get => _highlightPoint;
+            set
+            {
+                RaisePropertyChanging(this, new OnPropertyChangingEventArgs()
+                {
+                    propertyName = nameof(HighlightPoint),
+                    OldValue = _highlightPoint,
+                    Value = value
+                });
+                _highlightPoint = value;
+                //RaisePropertyChanged(() => HighlightPoint);
+            }
+        }
 
         protected int _id;
+
         private DateTime _date;
         public DateTime Date
         {
@@ -23,7 +64,9 @@ namespace GlukAppWpf.Models
             set
             {
                 _date = value;
+                InitializePoints();
                 RaisePropertyChanged(() => Date);
+                
             } }
 
         private float _value;
@@ -33,7 +76,9 @@ namespace GlukAppWpf.Models
             set
             {
                 _value = value;
+                InitializePoints();
                 RaisePropertyChanged(() => Value);
+                
             }
         }
 
@@ -63,23 +108,23 @@ namespace GlukAppWpf.Models
 
         public DataPoint GetDataPoint()
         {
-            return _point;
+            return Point;
         }
 
         public ScatterPoint GetScatterPoint()
         {
-            return _highlightPoint;
+            return HighlightPoint;
         }
 
-        /// <summary>
-        /// Generates new datapoint based on current Date and Value
-        /// </summary>
-        /// <returns>Newly-generated point</returns>
-        public DataPoint GenerateDataPoint()
+        public void InitializePoints()
         {
-            _point = new DataPoint(DateTimeAxis.ToDouble(Date), Value);
-            _highlightPoint = new ScatterPoint(_point.X, _point.Y);
-            return _point;
+            Point = new DataPoint(DateTimeAxis.ToDouble(Date), Value);
+            HighlightPoint = new ScatterPoint(_point.X, _point.Y);
+        }
+
+        private void RaisePropertyChanging(object sender, OnPropertyChangingEventArgs args)
+        {
+            OnPropertyChanging?.Invoke(sender, args);
         }
 
         public override bool Equals(object obj)
@@ -104,5 +149,12 @@ namespace GlukAppWpf.Models
         }
 
         
+    }
+
+    public class OnPropertyChangingEventArgs
+    {
+        public string propertyName { get; set; }
+        public object OldValue { get; set; }
+        public object Value { get; set; }
     }
 }
